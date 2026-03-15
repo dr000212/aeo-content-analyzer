@@ -47,5 +47,10 @@ logs/
 # Docker
 docker-compose.override.yml
 
+# Node / Next.js
+node_modules/
+.next/
+out/
+
 # Claude
 .claude/
