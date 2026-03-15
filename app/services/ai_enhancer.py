@@ -85,12 +85,22 @@ Focus on the HIGHEST IMPACT changes. Be specific to THIS page's content, not gen
             except ValueError:
                 category = Category.STRUCTURE
 
+            # GPT sometimes returns code_snippet as a dict (e.g. JSON-LD object)
+            # instead of a string — convert it
+            snippet = r.get("code_snippet")
+            if isinstance(snippet, dict) or isinstance(snippet, list):
+                snippet = json.dumps(snippet, indent=2)
+
+            rewrite = r.get("suggested_rewrite")
+            if isinstance(rewrite, dict) or isinstance(rewrite, list):
+                rewrite = json.dumps(rewrite, indent=2)
+
             ai_recs.append(AIRecommendation(
                 title=r.get("title", ""),
                 description=r.get("description", ""),
                 category=category,
-                suggested_rewrite=r.get("suggested_rewrite"),
-                code_snippet=r.get("code_snippet"),
+                suggested_rewrite=rewrite,
+                code_snippet=snippet,
             ))
 
         return ai_recs
