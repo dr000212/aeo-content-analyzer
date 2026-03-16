@@ -132,7 +132,7 @@ export default function Home() {
       <footer className="max-w-6xl mx-auto px-4 py-6 mt-8 border-t border-border">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-text-dim">
           <span>
-            AEOLens &mdash; Find out how search engines and AI see your page
+            SearchEO &mdash; Find out how search engines and AI see your page
           </span>
           <span className="text-text-dim/60">
             Currently in beta &middot; Scores are indicative, not absolute

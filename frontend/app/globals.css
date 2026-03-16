@@ -5,11 +5,11 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 
 :root {
-  --bg: #f8fafc;
+  --bg: #F0F4FF;
   --surface: #ffffff;
   --card: #ffffff;
   --border: #e2e8f0;
-  --primary: #3b82f6;
+  --primary: #4F46E5;
   --accent: #06d6a0;
   --warning: #f59e0b;
   --danger: #ef4444;
@@ -20,7 +20,8 @@
 }
 
 body {
-  background-color: var(--bg);
+  background: linear-gradient(135deg, #F0F4FF 0%, #F5F3FF 50%, #EFF6FF 100%);
+  background-attachment: fixed;
   color: #0f172a;
   font-family: "DM Sans", system-ui, sans-serif;
 }
@@ -37,14 +38,18 @@ body {
   border-radius: 3px;
 }
 
-/* Card shadow for light theme */
+/* Card shadow with hover effect */
 .bg-card {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px rgba(79, 70, 229, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.bg-card:hover {
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 /* Gradient text utility */
 .gradient-text {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  background: linear-gradient(135deg, #4F46E5, #7C3AED, #06D6A0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -52,7 +57,24 @@ body {
 
 /* Gradient border utility */
 .gradient-border {
-  border-image: linear-gradient(135deg, var(--primary), var(--accent)) 1;
+  border-image: linear-gradient(135deg, #4F46E5, #06D6A0) 1;
+}
+
+/* Animated gradient background */
+.gradient-bg {
+  background: linear-gradient(135deg, #4F46E5, #7C3AED, #06D6A0, #4F46E5);
+  background-size: 300% 300%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Hero card glow */
+.hero-glow {
+  box-shadow: 0 0 40px rgba(79, 70, 229, 0.08), 0 0 80px rgba(124, 58, 237, 0.04);
 }
 
 /* Code block styling */

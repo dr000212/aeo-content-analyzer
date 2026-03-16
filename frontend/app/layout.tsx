@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AEOLens \u2014 AI Answer Engine Content Optimizer",
+  title: "SearchEO \u2014 See How Search Engines & AI See Your Page",
   description:
-    "Score and optimize your content for AI answer engines. Analyze structure, schema markup, entity coverage, and readability.",
+    "Analyze your webpage across 66 checks for search visibility, speed, and AI readiness. Free, instant results.",
   openGraph: {
-    title: "AEOLens \u2014 AI Answer Engine Content Optimizer",
-    description: "Scan, score, and optimize any page for AI answer engines.",
+    title: "SearchEO \u2014 See How Search Engines & AI See Your Page",
+    description: "Check 66 things across search visibility, speed, and AI readiness. Free and instant.",
     type: "website",
   },
 };

@@ -448,6 +448,151 @@ export const EFFORT_LABELS: Record<string, string> = {
   High: "Significant effort (1+ hours)",
 };
 
+export const PILLAR_WHAT_WE_CHECK: Record<
+  string,
+  { weight: number; summary: string; checks: string[]; color: string }
+> = {
+  technical_seo: {
+    weight: 15,
+    color: "blue",
+    summary: "We check 10 things about your website's technical setup",
+    checks: [
+      "Is your site secure (HTTPS)?",
+      "Does your page load without extra redirects?",
+      "Does the page load successfully (no errors)?",
+      "Can search engines find your crawling instructions?",
+      "Are search engines allowed to visit this page?",
+      "Is there a sitemap for search engines?",
+      "Is duplicate content protection set up?",
+      "Is the page set up for mobile devices?",
+      "Does the page declare its language?",
+      "Is character encoding properly set?",
+    ],
+  },
+  onpage_seo: {
+    weight: 20,
+    color: "purple",
+    summary: "We check 10 things about how your content is set up for search",
+    checks: [
+      "Does your page have a title?",
+      "Is your title the right length (30-60 characters)?",
+      "Does your title include your main topic?",
+      "Is there a summary (meta description) for search engines?",
+      "Is the summary the right length (120-160 characters)?",
+      "Is the URL clean and readable?",
+      "Do all images have descriptions (alt text)?",
+      "Is there exactly one main heading (H1)?",
+      "Does the main heading mention the key topic?",
+      "Do all headings have text content?",
+    ],
+  },
+  links: {
+    weight: 10,
+    color: "emerald",
+    summary: "We check 7 things about your internal and external links",
+    checks: [
+      "Are there enough links to your own related pages?",
+      "Do you link to external sources for credibility?",
+      "Are all links working (no broken links)?",
+      "Are external links properly secured?",
+      "Is link text descriptive (not just 'click here')?",
+      "Is the link-to-content ratio healthy?",
+      "Do internal links point to accessible pages?",
+    ],
+  },
+  performance: {
+    weight: 20,
+    color: "amber",
+    summary: "We check 8 things about how fast your page loads",
+    checks: [
+      "Does the page load in under 3 seconds?",
+      "Is the page code a reasonable size (under 100KB)?",
+      "Are scripts blocking the page from appearing?",
+      "Are too many stylesheets slowing things down?",
+      "Do images have proper dimensions set?",
+      "Do images load on-demand (lazy loading)?",
+      "Is inline styling kept to a minimum?",
+      "Is the page compressed for faster delivery?",
+    ],
+  },
+  geo_readiness: {
+    weight: 35,
+    color: "violet",
+    summary: "We check 31 things across 4 areas of AI readiness",
+    checks: [
+      "Content Structure (30%) — 8 checks on headings, paragraphs, and organization",
+      "Smart Tags (25%) — 8 checks on structured data and social sharing",
+      "Topic Depth (25%) — 7 checks on topic coverage and authority",
+      "Writing Quality (20%) — 8 checks on clarity, confidence, and freshness",
+    ],
+  },
+};
+
+export const GEO_SUB_WHAT_WE_CHECK: Record<
+  string,
+  { weight: number; checks: string[] }
+> = {
+  structure: {
+    weight: 30,
+    checks: [
+      "Is there one clear main title?",
+      "Do headings follow a logical order?",
+      "Is the main question answered right away?",
+      "Are paragraphs a good length for AI extraction?",
+      "Do headings match how people ask AI questions?",
+      "Are there lists or tables for structured info?",
+      "Is the content well-segmented with headings?",
+      "Is there enough depth and length?",
+    ],
+  },
+  schema_markup: {
+    weight: 25,
+    checks: [
+      "Is there structured data search engines can read?",
+      "Is Q&A content properly marked up?",
+      "Are step-by-step instructions marked up?",
+      "Is content optimized for voice assistants?",
+      "Does the page look good when shared on social media?",
+      "Are Twitter/X sharing tags set?",
+      "Is the page summary well-optimized?",
+      "Is duplicate protection set up?",
+    ],
+  },
+  entity: {
+    weight: 25,
+    checks: [
+      "Does content mention specific topics and names?",
+      "Does the main topic appear in key places?",
+      "Is the topic mentioned a healthy number of times?",
+      "Are key terms defined and explained?",
+      "Are there links to related content?",
+      "Are authoritative sources referenced?",
+      "Are related subtopics covered?",
+    ],
+  },
+  readability: {
+    weight: 20,
+    checks: [
+      "Is the writing clear and accessible?",
+      "Are sentences a good length (15-25 words)?",
+      "Is the writing direct and active (not passive)?",
+      "Are there no overly long sentences?",
+      "Does the content show who wrote it?",
+      "Is there a publish or update date?",
+      "Does the writing sound confident?",
+      "Is there a clear conclusion?",
+    ],
+  },
+};
+
+export const PILLAR_COLORS: Record<string, { bg: string; border: string; text: string; light: string }> = {
+  technical_seo: { bg: "bg-blue-500", border: "border-blue-400", text: "text-blue-600", light: "bg-blue-50" },
+  onpage_seo: { bg: "bg-purple-500", border: "border-purple-400", text: "text-purple-600", light: "bg-purple-50" },
+  links: { bg: "bg-emerald-500", border: "border-emerald-400", text: "text-emerald-600", light: "bg-emerald-50" },
+  performance: { bg: "bg-amber-500", border: "border-amber-400", text: "text-amber-600", light: "bg-amber-50" },
+  geo_readiness: { bg: "bg-violet-500", border: "border-violet-400", text: "text-violet-600", light: "bg-violet-50" },
+};
+
 export const PILLAR_FILTER_LABELS: Record<string, string> = {
   all: "All",
   "Technical SEO": "Site Foundation",
