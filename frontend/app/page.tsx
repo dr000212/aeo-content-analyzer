@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Header from "@/components/Header";
+import Logo from "@/components/Logo";
 import URLInput from "@/components/URLInput";
 import LoadingState from "@/components/LoadingState";
 import EmptyState from "@/components/EmptyState";
@@ -131,7 +132,10 @@ export default function Home() {
       {/* Footer */}
       <footer className="max-w-6xl mx-auto px-4 py-6 mt-8 border-t border-border">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-text-dim">
-          <span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-4 h-4 rounded bg-gradient-to-br from-primary via-purple-500 to-accent flex items-center justify-center inline-flex">
+              <Logo size={10} />
+            </span>
             SearchEO &mdash; Find out how search engines and AI see your page
           </span>
           <span className="text-text-dim/60">

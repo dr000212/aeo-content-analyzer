@@ -1,3 +1,5 @@
+import Logo from "./Logo";
+
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-border/50">
@@ -7,18 +9,7 @@ export default function Header() {
           <div className="relative w-10 h-10">
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary via-purple-500 to-accent opacity-20 blur-sm" />
             <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-purple-500 to-accent flex items-center justify-center shadow-lg shadow-primary/25">
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                className="text-white"
-              >
-                <circle cx="12" cy="12" r="3" fill="currentColor" />
-                <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.9" />
-                <path d="M12 6a6 6 0 0 1 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
-                <path d="M2 12a10 10 0 0 0 10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-              </svg>
+              <Logo size={22} />
             </div>
           </div>
 

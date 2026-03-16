@@ -2,6 +2,7 @@
 
 import ScoreRing from "./ScoreRing";
 import ScoringExplainer from "./ScoringExplainer";
+import Logo from "./Logo";
 import { AnalyzeResponse } from "@/lib/types";
 import { GRADE_DESCRIPTIONS } from "@/lib/labels";
 import { Clock, Database } from "lucide-react";
@@ -27,9 +28,14 @@ export default function ScoreHero({ data }: ScoreHeroProps) {
       {/* Subtle gradient accent at top */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-purple-500 to-accent" />
 
-      <p className="text-sm font-medium text-text-dim uppercase tracking-wider mb-4">
-        Website Health Score
-      </p>
+      <div className="flex items-center justify-center gap-2 mb-4">
+        <div className="w-6 h-6 rounded-md bg-gradient-to-br from-primary via-purple-500 to-accent flex items-center justify-center">
+          <Logo size={14} />
+        </div>
+        <p className="text-sm font-medium text-text-dim uppercase tracking-wider">
+          Website Health Score
+        </p>
+      </div>
 
       <div className="flex justify-center mb-4">
         <ScoreRing score={data.overall_score} size={150} strokeWidth={10} />
