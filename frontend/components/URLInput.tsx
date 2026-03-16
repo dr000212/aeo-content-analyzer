@@ -15,11 +15,11 @@ export default function URLInput({ onAnalyze, isLoading }: URLInputProps) {
 
   function validate(value: string): boolean {
     if (!value.trim()) {
-      setError("Please enter a URL.");
+      setError("That doesn't look like a web address. Make sure it starts with https://");
       return false;
     }
     if (!/^https?:\/\/.+/i.test(value.trim())) {
-      setError("Please enter a valid URL starting with http:// or https://");
+      setError("That doesn't look like a web address. Make sure it starts with https://");
       return false;
     }
     setError("");
@@ -35,7 +35,6 @@ export default function URLInput({ onAnalyze, isLoading }: URLInputProps) {
 
   return (
     <div id="url-input" className="w-full">
-      {/* Outer wrapper with glow effect */}
       <div
         className={`relative rounded-2xl p-[1px] transition-all duration-300 ${
           focused
@@ -47,7 +46,6 @@ export default function URLInput({ onAnalyze, isLoading }: URLInputProps) {
           onSubmit={handleSubmit}
           className="flex flex-col sm:flex-row sm:items-center gap-2 bg-surface rounded-2xl px-3 sm:px-4 py-2.5 sm:py-2"
         >
-          {/* Input row */}
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <div
               className={`flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-300 ${
@@ -69,13 +67,12 @@ export default function URLInput({ onAnalyze, isLoading }: URLInputProps) {
               }}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
-              placeholder="Paste any URL to analyze..."
+              placeholder="Paste your page URL here (e.g., https://yourwebsite.com/page)"
               className="flex-1 min-w-0 py-2 sm:py-2.5 bg-transparent text-text-main placeholder:text-text-dim focus:outline-none text-sm"
               disabled={isLoading}
             />
           </div>
 
-          {/* Button */}
           <button
             type="submit"
             disabled={isLoading}
@@ -88,12 +85,12 @@ export default function URLInput({ onAnalyze, isLoading }: URLInputProps) {
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Scanning...
+                Checking your page...
               </>
             ) : (
               <>
                 <Sparkles className="w-4 h-4" />
-                Analyze
+                Analyze My Page
                 <ArrowRight className="w-3.5 h-3.5 opacity-60" />
               </>
             )}
@@ -101,15 +98,13 @@ export default function URLInput({ onAnalyze, isLoading }: URLInputProps) {
         </form>
       </div>
 
-      {/* Error message */}
       {error && (
         <p className="mt-2 text-sm text-danger pl-2">{error}</p>
       )}
 
-      {/* Helper text */}
       {!error && !isLoading && (
         <p className="mt-2 text-xs text-text-dim pl-2">
-          Works with any public webpage &mdash; blogs, landing pages, docs, articles
+          We'll check 66 things across search visibility, speed, and AI readiness
         </p>
       )}
     </div>

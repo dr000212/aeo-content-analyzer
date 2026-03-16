@@ -33,7 +33,7 @@ export default function Header() {
               </span>
             </div>
             <p className="text-[11px] text-text-dim tracking-wide">
-              AI Answer Engine Content Optimizer
+              Find out how search engines and AI see your page
             </p>
           </div>
         </div>

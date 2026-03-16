@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
 
 const messages = [
-  "Crawling page...",
-  "Analyzing structure...",
-  "Checking schema markup...",
-  "Running NLP analysis...",
-  "Generating recommendations...",
+  "Opening your page...",
+  "Checking if search engines can find it...",
+  "Analyzing your content and headings...",
+  "Testing how fast it loads...",
+  "Checking if AI assistants can understand it...",
+  "Generating your report...",
 ];
 
 export default function LoadingState() {
@@ -22,9 +22,12 @@ export default function LoadingState() {
         setIndex((prev) => (prev + 1) % messages.length);
         setFade(true);
       }, 300);
-    }, 2000);
+    }, 2500);
     return () => clearInterval(interval);
   }, []);
+
+  // Progress bar width
+  const progress = ((index + 1) / messages.length) * 100;
 
   return (
     <div className="flex flex-col items-center justify-center py-24 gap-6">
@@ -32,21 +35,18 @@ export default function LoadingState() {
         <div className="w-16 h-16 rounded-full border-4 border-border border-t-primary animate-spin" />
       </div>
       <p
-        className={`text-text-muted text-sm transition-opacity duration-300 ${
+        className={`text-text-muted text-sm transition-opacity duration-300 text-center px-4 ${
           fade ? "opacity-100" : "opacity-0"
         }`}
       >
         {messages[index]}
       </p>
-      <div className="flex gap-1.5">
-        {messages.map((_, i) => (
-          <div
-            key={i}
-            className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-              i <= index ? "bg-primary" : "bg-border"
-            }`}
-          />
-        ))}
+      {/* Progress bar */}
+      <div className="w-48 h-1.5 bg-border rounded-full overflow-hidden">
+        <div
+          className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
+          style={{ width: `${progress}%` }}
+        />
       </div>
     </div>
   );

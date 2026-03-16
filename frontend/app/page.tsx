@@ -1,18 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, Database } from "lucide-react";
 import Header from "@/components/Header";
 import URLInput from "@/components/URLInput";
 import LoadingState from "@/components/LoadingState";
 import EmptyState from "@/components/EmptyState";
-import ScoreOverview from "@/components/ScoreOverview";
-import PageMeta from "@/components/PageMeta";
+import ScoreHero from "@/components/ScoreHero";
+import PillarScores from "@/components/PillarScores";
+import PageSnapshot from "@/components/PageSnapshot";
 import TabNavigation, { Tab } from "@/components/TabNavigation";
-import AuditOverview from "@/components/AuditOverview";
-import RecommendationList from "@/components/RecommendationList";
-import AIRecommendations from "@/components/AIRecommendations";
-import ChecklistView from "@/components/ChecklistView";
+import OverviewTab from "@/components/OverviewTab";
+import IssuesTab from "@/components/IssuesTab";
+import FixesTab from "@/components/FixesTab";
+import AIInsightsTab from "@/components/AIInsightsTab";
 import { AnalyzeResponse } from "@/lib/types";
 import { analyzeURL } from "@/lib/api";
 
@@ -28,13 +28,33 @@ export default function Home() {
     try {
       const data = await analyzeURL(url);
       setResult(data);
+      setActiveTab("overview");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Analysis failed");
+      const msg = err instanceof Error ? err.message : "Analysis failed";
+      if (msg.includes("timeout") || msg.includes("Timeout")) {
+        setError("That page is taking too long to respond. It might be down or very slow.");
+      } else if (msg.includes("DNS") || msg.includes("connection")) {
+        setError("We couldn't open that page. Double-check the URL and make sure the page is publicly accessible.");
+      } else if (msg.includes("rate") || msg.includes("429")) {
+        setError("You've run a lot of analyses! Please wait a minute before trying again.");
+      } else if (msg.includes("Non-HTML")) {
+        setError("That URL doesn't point to a webpage. Make sure you're linking to an HTML page.");
+      } else if (msg.includes("too large") || msg.includes("Content too large")) {
+        setError("That page is really large! We can currently analyze pages up to 5MB.");
+      } else if (msg.includes("500") || msg.includes("server")) {
+        setError("Something went wrong on our end. Please try again.");
+      } else {
+        setError(msg);
+      }
       setResult(null);
     } finally {
       setLoading(false);
     }
   }
+
+  const issueCount = result
+    ? result.checks.filter((c) => !c.passed).length
+    : 0;
 
   return (
     <div className="min-h-screen">
@@ -74,49 +94,34 @@ export default function Home() {
               )}
             </div>
 
-            {/* Score Overview */}
-            <ScoreOverview data={result} />
+            {/* Score Hero */}
+            <ScoreHero data={result} />
 
-            {/* Page Meta */}
-            <PageMeta meta={result.meta} />
+            {/* Pillar Scores */}
+            <PillarScores data={result} />
+
+            {/* Page Snapshot */}
+            <PageSnapshot meta={result.meta} />
 
             {/* Tabs */}
-            <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+            <TabNavigation
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              issueCount={issueCount}
+            />
 
             {/* Tab Content */}
             <div>
-              {activeTab === "overview" && <AuditOverview data={result} />}
-
-              {activeTab === "recommendations" && (
-                <div>
-                  <RecommendationList
-                    recommendations={result.recommendations}
-                  />
-                  <AIRecommendations
-                    recommendations={result.ai_recommendations}
-                    aiEnhanced={result.ai_enhanced}
-                  />
-                </div>
+              {activeTab === "overview" && <OverviewTab data={result} />}
+              {activeTab === "issues" && <IssuesTab checks={result.checks} />}
+              {activeTab === "fixes" && (
+                <FixesTab recommendations={result.recommendations} />
               )}
-
-              {activeTab === "checklist" && (
-                <ChecklistView checks={result.checks} />
-              )}
-            </div>
-
-            {/* Footer stats */}
-            <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-border text-xs text-text-dim">
-              <div className="flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5" />
-                Analyzed in {result.analysis_time_ms}ms
-              </div>
-              {result.cached && (
-                <div className="flex items-center gap-1.5">
-                  <Database className="w-3.5 h-3.5" />
-                  <span className="px-1.5 py-0.5 bg-accent/10 text-accent rounded text-xs">
-                    Cached result
-                  </span>
-                </div>
+              {activeTab === "ai" && (
+                <AIInsightsTab
+                  recommendations={result.ai_recommendations}
+                  aiEnhanced={result.ai_enhanced}
+                />
               )}
             </div>
           </div>
@@ -127,7 +132,7 @@ export default function Home() {
       <footer className="max-w-6xl mx-auto px-4 py-6 mt-8 border-t border-border">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-text-dim">
           <span>
-            AEOLens &mdash; AI Answer Engine Content Optimizer
+            AEOLens &mdash; Find out how search engines and AI see your page
           </span>
           <span className="text-text-dim/60">
             Currently in beta &middot; Scores are indicative, not absolute
