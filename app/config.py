@@ -25,11 +25,18 @@ class Settings(BaseSettings):
     crawler_user_agent: str = "AEOBot/1.0 (+https://aeosuite.com/bot)"
     crawler_max_content_length: int = 5_000_000  # 5 MB
 
-    # Analyzer weights (must sum to 1.0)
-    weight_structure: float = 0.30
-    weight_schema: float = 0.25
-    weight_entity: float = 0.25
-    weight_readability: float = 0.20
+    # ── Scoring Weights (5 pillars, must sum to 1.0) ──
+    weight_technical_seo: float = 0.15
+    weight_onpage_seo: float = 0.20
+    weight_links: float = 0.10
+    weight_performance: float = 0.20
+    weight_geo: float = 0.35
+
+    # ── GEO Sub-Weights (must sum to 1.0) ──
+    weight_geo_structure: float = 0.30
+    weight_geo_schema: float = 0.25
+    weight_geo_entity: float = 0.25
+    weight_geo_readability: float = 0.20
 
     # AI / LLM (OpenAI GPT)
     openai_api_key: Optional[str] = None

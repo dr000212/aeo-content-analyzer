@@ -14,13 +14,6 @@ def extract_text(soup: BeautifulSoup) -> str:
 
 
 def extract_headings(soup: BeautifulSoup) -> list[dict]:
-    headings = []
-    for level in range(1, 7):
-        for tag in soup.find_all(f"h{level}"):
-            text = tag.get_text(strip=True)
-            if text:
-                headings.append({"level": level, "text": text})
-    # Re-sort by document order
     all_heading_tags = soup.find_all(["h1", "h2", "h3", "h4", "h5", "h6"])
     headings = []
     for tag in all_heading_tags:
@@ -47,16 +40,29 @@ def extract_links(soup: BeautifulSoup, base_url: str) -> dict:
 
     for a in soup.find_all("a", href=True):
         href = a["href"]
+        anchor_text = a.get_text(strip=True)
+        rel = a.get("rel", [])
+        if isinstance(rel, str):
+            rel = [rel]
+        target = a.get("target", "")
         full_url = urljoin(base_url, href)
         parsed = urlparse(full_url)
+
+        link_info = {
+            "url": full_url,
+            "href": href,
+            "anchor_text": anchor_text,
+            "rel": rel,
+            "target": target,
+        }
 
         if not parsed.scheme.startswith("http"):
             continue
 
         if parsed.netloc == base_domain:
-            internal.append(full_url)
+            internal.append(link_info)
         else:
-            external.append(full_url)
+            external.append(link_info)
 
     return {"internal": internal, "external": external}
 
@@ -67,6 +73,8 @@ def extract_images(soup: BeautifulSoup) -> list[dict]:
         images.append({
             "src": img.get("src", ""),
             "alt": img.get("alt", ""),
+            "has_dimensions": bool(img.get("width") or img.get("height")),
+            "has_lazy_loading": img.get("loading", "").lower() == "lazy",
         })
     return images
 

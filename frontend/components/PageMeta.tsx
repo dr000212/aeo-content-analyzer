@@ -1,4 +1,4 @@
-import { FileText, Heading, Image, Code2 } from "lucide-react";
+import { FileText, Heading, Image, Code2, Link2, Clock, Shield, Gauge } from "lucide-react";
 import { PageMeta as PageMetaType } from "@/lib/types";
 
 interface PageMetaProps {
@@ -9,7 +9,11 @@ export default function PageMeta({ meta }: PageMetaProps) {
   const stats = [
     { icon: FileText, label: "Words", value: meta.word_count.toLocaleString() },
     { icon: Heading, label: "Headings", value: meta.heading_count },
-    { icon: Image, label: "Images", value: meta.image_count },
+    { icon: Image, label: "Images", value: `${meta.image_count} (${meta.images_without_alt} no alt)` },
+    { icon: Link2, label: "Links", value: `${meta.internal_link_count} int / ${meta.external_link_count} ext` },
+    { icon: Clock, label: "Load Time", value: `${meta.load_time_ms}ms` },
+    { icon: Gauge, label: "HTML Size", value: `${meta.html_size_kb}KB` },
+    { icon: Shield, label: "HTTPS", value: meta.is_https ? "Yes" : "No" },
     {
       icon: Code2,
       label: "Schema Types",
@@ -18,7 +22,7 @@ export default function PageMeta({ meta }: PageMetaProps) {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
       {stats.map((stat) => (
         <div
           key={stat.label}
