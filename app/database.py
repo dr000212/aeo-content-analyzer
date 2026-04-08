@@ -29,6 +29,13 @@ def _normalize_db_url(raw: str) -> tuple[str, dict]:
         parts = urlsplit(raw)
         query = dict(parse_qsl(parts.query))
         sslmode = query.pop("sslmode", None)
+        # Strip other libpq-only params asyncpg doesn't accept
+        for libpq_only in (
+            "channel_binding", "sslcert", "sslkey", "sslrootcert", "sslcrl",
+            "application_name", "options", "connect_timeout", "target_session_attrs",
+            "gssencmode", "krbsrvname", "service",
+        ):
+            query.pop(libpq_only, None)
         if sslmode in ("require", "verify-ca", "verify-full", "prefer", "allow"):
             connect_args["ssl"] = True
         raw = urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(query), parts.fragment))
