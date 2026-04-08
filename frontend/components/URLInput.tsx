@@ -104,7 +104,9 @@ export default function URLInput({ onAnalyze, isLoading }: URLInputProps) {
 
       {!error && !isLoading && (
         <p className="mt-2 text-xs text-text-dim pl-2">
-          We'll check 66 things across search visibility, speed, and AI readiness
+          We&apos;ll check 66 things — then our{" "}
+          <span className="font-semibold text-primary">AI SEO Expert</span> chats
+          with you about how to fix any issue, in plain English ✨
         </p>
       )}
     </div>

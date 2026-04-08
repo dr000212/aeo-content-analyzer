@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, AlertTriangle, Wrench, Sparkles } from "lucide-react";
+import { BarChart3, AlertTriangle, Wrench } from "lucide-react";
 
 export type Tab = "overview" | "issues" | "fixes" | "ai";
 
@@ -14,7 +14,6 @@ const tabs: { id: Tab; label: string; icon: typeof BarChart3 }[] = [
   { id: "overview", label: "Overview", icon: BarChart3 },
   { id: "issues", label: "Issues", icon: AlertTriangle },
   { id: "fixes", label: "How to Fix", icon: Wrench },
-  { id: "ai", label: "AI Suggestions", icon: Sparkles },
 ];
 
 export default function TabNavigation({

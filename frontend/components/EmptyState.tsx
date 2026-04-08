@@ -251,6 +251,9 @@ export default function EmptyState() {
             <Logo size={32} />
           </div>
         </div>
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 mb-3 rounded-full bg-gradient-to-r from-primary/10 via-purple-500/10 to-accent/10 border border-primary/20 text-xs font-bold text-primary">
+          <Sparkles className="w-3 h-3" /> AI-Powered SEO Assistant
+        </span>
         <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-2">
           <span className="gradient-text">Find out how search engines and AI</span>
           <br />
@@ -258,7 +261,8 @@ export default function EmptyState() {
         </h2>
         <p className="text-text-muted max-w-2xl mt-1">
           We check <span className="font-semibold text-primary">66 things</span> across{" "}
-          <span className="font-semibold text-primary">5 categories</span> to help you get found online.
+          <span className="font-semibold text-primary">5 categories</span> — then our{" "}
+          <span className="font-semibold text-primary">AI SEO Expert</span> walks you through every fix in plain English.
         </p>
       </div>
 
@@ -297,6 +301,36 @@ export default function EmptyState() {
 
       {/* Sliding Description Card */}
       <DescriptionSlideshow activeIndex={activeIndex} />
+
+      {/* Mini chat preview — teaser for the AI assistant */}
+      <div className="bg-gradient-to-br from-white via-blue-50/40 to-purple-50/40 border-2 border-primary/20 rounded-2xl p-4 sm:p-5 shadow-md">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary via-purple-600 to-accent flex items-center justify-center text-white text-xs font-bold">
+            ✨
+          </div>
+          <p className="text-xs font-bold text-text-main">
+            After your analysis, chat with our Expert SEO Assistant
+            <span className="ml-1.5 text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-semibold">Powered by AI</span>
+          </p>
+        </div>
+        <div className="bg-white border border-border rounded-xl rounded-tl-sm px-3 py-2 text-xs text-text-main mb-3 max-w-[90%] shadow-sm">
+          🤖 I&apos;ll explain every issue and give you exact, copy-paste code to fix it — no jargon.
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {[
+            "How do I fix my title?",
+            "Explain my score in simple terms",
+            "What should I fix first?",
+          ].map((q) => (
+            <span
+              key={q}
+              className="text-[11px] px-2.5 py-1 rounded-full bg-primary/5 border border-primary/20 text-primary font-medium"
+            >
+              {q}
+            </span>
+          ))}
+        </div>
+      </div>
 
       {/* CTA */}
       <div className="flex flex-col items-center text-center pt-2">

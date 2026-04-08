@@ -78,8 +78,21 @@ export interface PageMeta {
   render_blocking_styles: number;
 }
 
+export interface ChatHistoryItem {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface ChatResponse {
+  role: "assistant";
+  content: string;
+  suggested_questions: string[];
+}
+
 export interface AnalyzeResponse {
   url: string;
+  analysis_id: string | null;
+  suggested_questions: string[];
   overall_score: number;
   grade: string;
   // 5 pillars

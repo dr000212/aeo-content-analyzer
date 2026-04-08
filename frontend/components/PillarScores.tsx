@@ -1,15 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import ScoreRing from "./ScoreRing";
-import Tooltip from "./Tooltip";
 import { AnalyzeResponse, ModuleResult, Check } from "@/lib/types";
 import {
   PILLAR_LABELS,
-  GEO_SUB_LABELS,
   PILLAR_WHAT_WE_CHECK,
-  GEO_SUB_WHAT_WE_CHECK,
   PILLAR_COLORS,
   CHECK_LABELS,
 } from "@/lib/labels";
@@ -18,89 +12,42 @@ interface PillarScoresProps {
   data: AnalyzeResponse;
 }
 
-function CheckListInline({ checks }: { checks: Check[] }) {
-  const [showPassed, setShowPassed] = useState(false);
-  const failed = checks.filter((c) => !c.passed);
-  const passed = checks.filter((c) => c.passed);
+function getBarColor(score: number): string {
+  if (score >= 75) return "from-emerald-400 to-emerald-500";
+  if (score >= 50) return "from-amber-400 to-amber-500";
+  return "from-red-400 to-red-500";
+}
 
+function CheckItem({ check }: { check: Check }) {
+  const label = CHECK_LABELS[check.id];
+  const text = label
+    ? check.passed
+      ? label.passed
+      : label.failed
+    : check.text;
   return (
-    <div className="mt-3 pt-3 border-t border-border animate-fade-in">
-      {/* Failed checks */}
-      {failed.length > 0 && (
-        <div className="space-y-1.5 mb-3">
-          <p className="text-[11px] font-semibold text-red-600 uppercase tracking-wider">
-            Needs attention ({failed.length})
-          </p>
-          {failed.map((check) => {
-            const label = CHECK_LABELS[check.id];
-            return (
-              <div key={check.id} className="group">
-                <div className="flex items-start gap-2 text-xs py-1">
-                  <span className="text-red-500 mt-0.5 flex-shrink-0">✗</span>
-                  <div className="flex-1">
-                    <span className="text-text-main font-medium">
-                      {label ? label.failed : check.text}
-                    </span>
-                    {label && (
-                      <p className="text-text-dim mt-0.5 leading-relaxed">
-                        💡 {label.why}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Passed checks */}
-      {passed.length > 0 && (
-        <div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowPassed(!showPassed);
-            }}
-            className="text-[11px] text-emerald-600 font-medium hover:text-emerald-700 transition-colors"
-          >
-            {showPassed
-              ? `Hide ${passed.length} passed checks`
-              : `Show ${passed.length} passed checks ✓`}
-          </button>
-          {showPassed && (
-            <div className="mt-1.5 space-y-1 animate-fade-in">
-              {passed.map((check) => {
-                const label = CHECK_LABELS[check.id];
-                return (
-                  <div key={check.id} className="flex items-start gap-2 text-xs py-0.5">
-                    <span className="text-emerald-500 mt-0.5 flex-shrink-0">✓</span>
-                    <span className="text-text-muted">
-                      {label ? label.passed : check.text}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
-
-      {failed.length === 0 && (
-        <p className="text-xs text-emerald-600 font-medium py-1">
-          All checks passed! 🎉
-        </p>
-      )}
-    </div>
+    <li className="flex items-start gap-2 text-xs py-1">
+      <span
+        className={`mt-0.5 flex-shrink-0 ${
+          check.passed ? "text-emerald-500" : "text-red-500"
+        }`}
+      >
+        {check.passed ? "✓" : "✗"}
+      </span>
+      <span
+        className={check.passed ? "text-text-muted" : "text-text-main font-medium"}
+      >
+        {text}
+      </span>
+    </li>
   );
 }
 
-function PillarCard({
+function PillarRow({
   pillarKey,
   icon,
   name,
   tagline,
-  description,
   score,
   weight,
   checks,
@@ -109,120 +56,127 @@ function PillarCard({
   icon: string;
   name: string;
   tagline: string;
-  description: string;
   score: number;
   weight: number;
   checks: Check[];
 }) {
-  const [expanded, setExpanded] = useState(false);
-  const failedCount = checks.filter((c) => !c.passed).length;
+  const failed = checks.filter((c) => !c.passed);
+  const passed = checks.filter((c) => c.passed);
   const colors = PILLAR_COLORS[pillarKey];
+  const barColor = getBarColor(score);
 
   return (
     <div
-      className={`bg-card border-l-4 ${colors?.border || "border-blue-400"} border border-border rounded-xl p-4 transition-all duration-200`}
+      id={`pillar-${pillarKey}`}
+      className={`bg-card border-l-4 ${colors?.border || "border-blue-400"} border border-border rounded-xl p-4 scroll-mt-24`}
     >
-      <div className="flex items-start gap-3">
+      {/* Header row: icon + name + score + bar */}
+      <div className="flex items-center gap-3">
         <span className="text-2xl flex-shrink-0">{icon}</span>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5">
-            <h3 className="font-semibold text-text-main text-sm">{name}</h3>
-            <Tooltip text={description} />
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <h3 className="font-bold text-text-main text-sm">{name}</h3>
+            <span
+              className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                colors?.light || "bg-blue-50"
+              } ${colors?.text || "text-blue-600"}`}
+            >
+              {weight}% weight
+            </span>
           </div>
-          <p className="text-xs text-text-dim mt-0.5">{tagline}</p>
+          <p className="text-[11px] text-text-dim mt-0.5">{tagline}</p>
         </div>
-        <ScoreRing score={score} size={56} strokeWidth={4} />
+        <div className="text-right flex-shrink-0">
+          <div className="text-2xl font-extrabold text-text-main leading-none">
+            {score}
+          </div>
+          <div className="text-[10px] text-text-dim">/100</div>
+        </div>
       </div>
-      <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
-        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${colors?.light || "bg-blue-50"} ${colors?.text || "text-blue-600"}`}>
-          {weight}% of your score
+
+      {/* Progress bar */}
+      <div className="mt-3 h-2 rounded-full bg-slate-200 overflow-hidden">
+        <div
+          className={`h-full rounded-full bg-gradient-to-r ${barColor} transition-all duration-700`}
+          style={{ width: `${score}%` }}
+        />
+      </div>
+
+      {/* Status line */}
+      <div className="mt-2 flex items-center justify-between text-[11px]">
+        <span className="text-emerald-600 font-medium">
+          ✓ {passed.length} passed
         </span>
-        {failedCount > 0 ? (
-          <span className="text-xs text-amber-600 font-medium">
-            {failedCount} of {checks.length} need attention
+        {failed.length > 0 ? (
+          <span className="text-amber-600 font-medium">
+            ✗ {failed.length} need fixing
           </span>
         ) : (
-          <span className="text-xs text-emerald-600 font-medium">
-            All {checks.length} checks passed
-          </span>
+          <span className="text-emerald-600 font-medium">All good 🎉</span>
         )}
       </div>
 
-      {/* Expandable check list */}
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="flex items-center gap-1 text-xs text-primary font-medium mt-3 hover:text-purple-600 transition-colors"
-      >
-        {expanded ? (
-          <>Hide checks <ChevronUp className="w-3.5 h-3.5" /></>
-        ) : (
-          <>What we check <ChevronDown className="w-3.5 h-3.5" /></>
-        )}
-      </button>
-
-      {expanded && <CheckListInline checks={checks} />}
+      {/* Failed checks listed straight */}
+      {failed.length > 0 && (
+        <ul className="mt-3 pt-3 border-t border-border space-y-0.5">
+          {failed.map((c) => (
+            <CheckItem key={c.id} check={c} />
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
 
-function GeoSubModule({
+function GeoSubRow({
   subKey,
-  name,
-  tagline,
-  description,
   result,
   weight,
 }: {
   subKey: string;
-  name: string;
-  tagline: string;
-  description: string;
   result: ModuleResult;
   weight: number;
 }) {
-  const [expanded, setExpanded] = useState(false);
-  const failed = result.checks.filter((c) => !c.passed).length;
+  const failed = result.checks.filter((c) => !c.passed);
+  const barColor = getBarColor(result.score);
+  const labelMap: Record<string, { name: string; tagline: string }> = {
+    structure: { name: "Content Structure", tagline: "Headings, paragraphs, organization" },
+    schema_markup: { name: "Smart Tags", tagline: "Structured data for AI" },
+    entity: { name: "Topic Depth", tagline: "Coverage of related concepts" },
+    readability: { name: "Writing Quality", tagline: "Clarity, confidence, freshness" },
+  };
+  const info = labelMap[subKey];
 
   return (
-    <div className="py-2">
-      <div className="flex items-center gap-3">
-        <ScoreRing score={result.score} size={40} strokeWidth={3} />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5">
-            <span className="text-sm font-medium text-text-main">{name}</span>
-            <Tooltip text={description} />
+    <div className="bg-white/60 rounded-lg p-3 border border-violet-100">
+      <div className="flex items-baseline justify-between gap-2 mb-1.5">
+        <div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-xs font-semibold text-text-main">{info.name}</span>
+            <span className="text-[9px] text-violet-600 font-bold">{weight}%</span>
           </div>
-          <p className="text-xs text-text-dim">{tagline}</p>
+          <p className="text-[10px] text-text-dim">{info.tagline}</p>
         </div>
-        <div className="text-right">
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-50 text-violet-600">
-            {weight}%
-          </span>
-          {failed > 0 && (
-            <p className="text-xs text-amber-600 mt-0.5">{failed} to fix</p>
-          )}
+        <div className="text-lg font-extrabold text-violet-700 leading-none">
+          {result.score}
         </div>
       </div>
-
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="flex items-center gap-1 text-[11px] text-primary font-medium mt-1.5 ml-[52px] hover:text-purple-600 transition-colors"
-      >
-        {expanded ? (
-          <>Hide checks <ChevronUp className="w-3 h-3" /></>
-        ) : (
-          <>See checks <ChevronDown className="w-3 h-3" /></>
-        )}
-      </button>
-
-      {expanded && <CheckListInline checks={result.checks} />}
+      <div className="h-1.5 rounded-full bg-violet-100 overflow-hidden">
+        <div
+          className={`h-full rounded-full bg-gradient-to-r ${barColor} transition-all duration-700`}
+          style={{ width: `${result.score}%` }}
+        />
+      </div>
+      {failed.length > 0 && (
+        <p className="text-[10px] text-amber-700 mt-1.5">
+          {failed.length} of {result.checks.length} need fixing
+        </p>
+      )}
     </div>
   );
 }
 
 export default function PillarScores({ data }: PillarScoresProps) {
-  const [geoExpanded, setGeoExpanded] = useState(false);
-
   const pillars = [
     {
       key: "technical_seo",
@@ -254,22 +208,28 @@ export default function PillarScores({ data }: PillarScoresProps) {
     },
   ];
 
-  const geoFailed = data.geo_readiness.checks.filter((c) => !c.passed).length;
-  const geoTotal = data.geo_readiness.checks.length;
   const geoColors = PILLAR_COLORS.geo_readiness;
+  const geoFailed = data.geo_readiness.checks.filter((c) => !c.passed);
+  const geoPassed = data.geo_readiness.checks.filter((c) => c.passed);
+  const geoBar = getBarColor(data.geo_readiness.score);
 
   return (
     <div className="space-y-3">
-      {/* SEO Pillars */}
+      <h2 className="text-sm font-bold text-text-main flex items-center gap-2">
+        <span>📊</span> Detailed breakdown
+        <span className="text-xs font-normal text-text-dim">
+          — full scores for every pillar
+        </span>
+      </h2>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {pillars.map((p) => (
-          <PillarCard
+          <PillarRow
             key={p.key}
             pillarKey={p.key}
             icon={p.icon}
             name={p.name}
             tagline={p.tagline}
-            description={p.description}
             score={p.score}
             weight={p.weight}
             checks={p.checks}
@@ -277,73 +237,68 @@ export default function PillarScores({ data }: PillarScoresProps) {
         ))}
       </div>
 
-      {/* GEO Pillar (expandable) */}
-      <div className={`bg-card border-l-4 ${geoColors.border} border border-border rounded-xl p-4`}>
-        <div className="flex items-start gap-3">
+      {/* GEO pillar — full row with sub-modules always visible */}
+      <div
+        id="pillar-geo_readiness"
+        className={`bg-card border-l-4 ${geoColors.border} border border-border rounded-xl p-4 scroll-mt-24`}
+      >
+        <div className="flex items-center gap-3">
           <span className="text-2xl flex-shrink-0">{PILLAR_LABELS.geo_readiness.icon}</span>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5">
-              <h3 className="font-semibold text-text-main text-sm">{PILLAR_LABELS.geo_readiness.name}</h3>
-              <Tooltip text={PILLAR_LABELS.geo_readiness.description} />
+            <div className="flex items-baseline gap-2 flex-wrap">
+              <h3 className="font-bold text-text-main text-sm">
+                {PILLAR_LABELS.geo_readiness.name}
+              </h3>
+              <span
+                className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${geoColors.light} ${geoColors.text}`}
+              >
+                {PILLAR_WHAT_WE_CHECK.geo_readiness.weight}% weight (largest)
+              </span>
             </div>
-            <p className="text-xs text-text-dim mt-0.5">{PILLAR_LABELS.geo_readiness.tagline}</p>
+            <p className="text-[11px] text-text-dim mt-0.5">
+              {PILLAR_LABELS.geo_readiness.tagline}
+            </p>
           </div>
-          <ScoreRing score={data.geo_readiness.score} size={56} strokeWidth={4} />
+          <div className="text-right flex-shrink-0">
+            <div className="text-2xl font-extrabold text-text-main leading-none">
+              {data.geo_readiness.score}
+            </div>
+            <div className="text-[10px] text-text-dim">/100</div>
+          </div>
         </div>
 
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
-          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${geoColors.light} ${geoColors.text}`}>
-            {PILLAR_WHAT_WE_CHECK.geo_readiness.weight}% of your score
+        <div className="mt-3 h-2 rounded-full bg-slate-200 overflow-hidden">
+          <div
+            className={`h-full rounded-full bg-gradient-to-r ${geoBar} transition-all duration-700`}
+            style={{ width: `${data.geo_readiness.score}%` }}
+          />
+        </div>
+
+        <div className="mt-2 flex items-center justify-between text-[11px]">
+          <span className="text-emerald-600 font-medium">
+            ✓ {geoPassed.length} passed
           </span>
-          {geoFailed > 0 ? (
-            <span className="text-xs text-amber-600 font-medium">
-              {geoFailed} of {geoTotal} checks need attention
-            </span>
-          ) : (
-            <span className="text-xs text-emerald-600 font-medium">
-              All {geoTotal} checks passed
+          {geoFailed.length > 0 && (
+            <span className="text-amber-600 font-medium">
+              ✗ {geoFailed.length} need fixing
             </span>
           )}
         </div>
 
-        <button
-          onClick={() => setGeoExpanded(!geoExpanded)}
-          className="flex items-center gap-1 text-xs text-primary font-medium mt-3 hover:text-purple-600 transition-colors"
-        >
-          {geoExpanded ? (
-            <>Hide details <ChevronUp className="w-3.5 h-3.5" /></>
-          ) : (
-            <>See details <ChevronDown className="w-3.5 h-3.5" /></>
-          )}
-        </button>
+        {/* GEO sub-modules — always visible, straight */}
+        <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <GeoSubRow subKey="structure" result={data.geo_readiness.structure} weight={30} />
+          <GeoSubRow subKey="schema_markup" result={data.geo_readiness.schema_markup} weight={25} />
+          <GeoSubRow subKey="entity" result={data.geo_readiness.entity} weight={25} />
+          <GeoSubRow subKey="readability" result={data.geo_readiness.readability} weight={20} />
+        </div>
 
-        {geoExpanded && (
-          <div className="mt-3 pt-3 border-t border-border space-y-1 divide-y divide-border animate-fade-in">
-            <GeoSubModule
-              subKey="structure"
-              {...GEO_SUB_LABELS.structure}
-              result={data.geo_readiness.structure}
-              weight={GEO_SUB_WHAT_WE_CHECK.structure.weight}
-            />
-            <GeoSubModule
-              subKey="schema_markup"
-              {...GEO_SUB_LABELS.schema_markup}
-              result={data.geo_readiness.schema_markup}
-              weight={GEO_SUB_WHAT_WE_CHECK.schema_markup.weight}
-            />
-            <GeoSubModule
-              subKey="entity"
-              {...GEO_SUB_LABELS.entity}
-              result={data.geo_readiness.entity}
-              weight={GEO_SUB_WHAT_WE_CHECK.entity.weight}
-            />
-            <GeoSubModule
-              subKey="readability"
-              {...GEO_SUB_LABELS.readability}
-              result={data.geo_readiness.readability}
-              weight={GEO_SUB_WHAT_WE_CHECK.readability.weight}
-            />
-          </div>
+        {geoFailed.length > 0 && (
+          <ul className="mt-3 pt-3 border-t border-border space-y-0.5">
+            {geoFailed.map((c) => (
+              <CheckItem key={c.id} check={c} />
+            ))}
+          </ul>
         )}
       </div>
     </div>

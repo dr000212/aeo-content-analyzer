@@ -1,4 +1,4 @@
-import { AnalyzeResponse } from "./types";
+import { AnalyzeResponse, ChatHistoryItem, ChatResponse } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -56,4 +56,33 @@ export async function analyzeURL(url: string): Promise<AnalyzeResponse> {
   } finally {
     clearTimeout(timeout);
   }
+}
+
+export async function sendChatMessage(
+  analysisId: string,
+  message: string,
+  history: ChatHistoryItem[]
+): Promise<ChatResponse> {
+  const response = await fetch(`${API_URL}/api/v1/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ analysis_id: analysisId, message, history }),
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error("Analysis not found. Please re-analyze the page.");
+    }
+    if (response.status === 503) {
+      throw new Error(
+        "The AI assistant is temporarily unavailable. Please try again in a moment."
+      );
+    }
+    const error = await response.json().catch(() => ({}));
+    throw new Error(
+      (error as { detail?: string }).detail || "Chat request failed"
+    );
+  }
+
+  return response.json();
 }

@@ -6,14 +6,14 @@ import Logo from "@/components/Logo";
 import URLInput from "@/components/URLInput";
 import LoadingState from "@/components/LoadingState";
 import EmptyState from "@/components/EmptyState";
-import ScoreHero from "@/components/ScoreHero";
+import ScoreDashboard from "@/components/ScoreDashboard";
 import PillarScores from "@/components/PillarScores";
 import PageSnapshot from "@/components/PageSnapshot";
 import TabNavigation, { Tab } from "@/components/TabNavigation";
 import OverviewTab from "@/components/OverviewTab";
 import IssuesTab from "@/components/IssuesTab";
 import FixesTab from "@/components/FixesTab";
-import AIInsightsTab from "@/components/AIInsightsTab";
+import ChatInterface from "@/components/ChatInterface";
 import { AnalyzeResponse } from "@/lib/types";
 import { analyzeURL } from "@/lib/api";
 
@@ -95,10 +95,17 @@ export default function Home() {
               )}
             </div>
 
-            {/* Score Hero */}
-            <ScoreHero data={result} />
+            {/* Interactive Score Dashboard */}
+            <ScoreDashboard data={result} />
 
-            {/* Pillar Scores */}
+            {/* Expert SEO Assistant — chat interface (the star) */}
+            <ChatInterface
+              analysisId={result.analysis_id}
+              initialSuggestions={result.suggested_questions}
+              url={result.url}
+            />
+
+            {/* Pillar Scores — flat detailed breakdown */}
             <PillarScores data={result} />
 
             {/* Page Snapshot */}
@@ -117,12 +124,6 @@ export default function Home() {
               {activeTab === "issues" && <IssuesTab checks={result.checks} />}
               {activeTab === "fixes" && (
                 <FixesTab recommendations={result.recommendations} />
-              )}
-              {activeTab === "ai" && (
-                <AIInsightsTab
-                  recommendations={result.ai_recommendations}
-                  aiEnhanced={result.ai_enhanced}
-                />
               )}
             </div>
           </div>

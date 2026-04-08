@@ -102,6 +102,13 @@ class PageMeta(BaseModel):
 class AnalyzeResponse(BaseModel):
     url: str
 
+    # ID of the stored analysis row — used by the chat endpoint to load context.
+    # Optional so analyses can still be returned if DB write fails.
+    analysis_id: Optional[str] = None
+
+    # Suggested chat chips generated from the failed checks.
+    suggested_questions: list[str] = []
+
     # One overall SEO score (GEO is a pillar inside this)
     overall_score: int = Field(ge=0, le=100)
     grade: str  # "Excellent" / "Good" / "Needs Improvement" / "Poor"
