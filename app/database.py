@@ -1,4 +1,6 @@
-"""Async SQLAlchemy engine + session for SQLite (aeo.db)."""
+"""Async SQLAlchemy engine + session. Supports SQLite (local) and Postgres (Render)."""
+from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
+
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
@@ -9,8 +11,34 @@ class Base(DeclarativeBase):
     pass
 
 
-# SQLite file lives at project root as aeo.db
-engine = create_async_engine(settings.database_url, echo=False, future=True)
+def _normalize_db_url(raw: str) -> tuple[str, dict]:
+    """Normalize DATABASE_URL for async drivers. Returns (url, connect_args)."""
+    connect_args: dict = {}
+    if not raw:
+        return raw, connect_args
+
+    # Normalize scheme: postgres:// or postgresql:// -> postgresql+asyncpg://
+    if raw.startswith("postgres://"):
+        raw = "postgresql+asyncpg://" + raw[len("postgres://"):]
+    elif raw.startswith("postgresql://"):
+        raw = "postgresql+asyncpg://" + raw[len("postgresql://"):]
+
+    # asyncpg doesn't understand libpq's `sslmode` query param — strip it and
+    # pass ssl via connect_args instead.
+    if "+asyncpg" in raw:
+        parts = urlsplit(raw)
+        query = dict(parse_qsl(parts.query))
+        sslmode = query.pop("sslmode", None)
+        if sslmode in ("require", "verify-ca", "verify-full", "prefer", "allow"):
+            connect_args["ssl"] = True
+        raw = urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(query), parts.fragment))
+
+    return raw, connect_args
+
+
+_db_url, _connect_args = _normalize_db_url(settings.database_url)
+
+engine = create_async_engine(_db_url, echo=False, future=True, connect_args=_connect_args)
 
 AsyncSessionLocal = async_sessionmaker(
     bind=engine,

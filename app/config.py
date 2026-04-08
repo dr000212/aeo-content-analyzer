@@ -1,4 +1,5 @@
 from typing import Optional
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from pydantic import field_validator
 from pydantic_settings import BaseSettings
@@ -57,19 +58,35 @@ class Settings(BaseSettings):
         if not isinstance(value, str):
             return value
 
-        if value.startswith("postgres://"):
-            return value.replace("postgres://", "postgresql+asyncpg://", 1)
+        database_url = value
 
-        if value.startswith("postgresql://"):
-            return value.replace("postgresql://", "postgresql+asyncpg://", 1)
+        if database_url.startswith("postgres://"):
+            database_url = database_url.replace("postgres://", "postgresql+asyncpg://", 1)
 
-        if value.startswith("postgresql+psycopg2://"):
-            return value.replace("postgresql+psycopg2://", "postgresql+asyncpg://", 1)
+        if database_url.startswith("postgresql://"):
+            database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
 
-        if value.startswith("postgresql+psycopg://"):
-            return value.replace("postgresql+psycopg://", "postgresql+asyncpg://", 1)
+        if database_url.startswith("postgresql+psycopg2://"):
+            database_url = database_url.replace("postgresql+psycopg2://", "postgresql+asyncpg://", 1)
 
-        return value
+        if database_url.startswith("postgresql+psycopg://"):
+            database_url = database_url.replace("postgresql+psycopg://", "postgresql+asyncpg://", 1)
+
+        if not database_url.startswith("postgresql+asyncpg://"):
+            return database_url
+
+        parts = urlsplit(database_url)
+        query_params = parse_qsl(parts.query, keep_blank_values=True)
+
+        normalized_query_params = []
+        for key, param_value in query_params:
+            if key == "sslmode":
+                normalized_query_params.append(("ssl", param_value))
+                continue
+
+            normalized_query_params.append((key, param_value))
+
+        return urlunsplit(parts._replace(query=urlencode(normalized_query_params)))
 
 
 settings = Settings()
