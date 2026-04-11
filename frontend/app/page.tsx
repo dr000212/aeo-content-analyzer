@@ -12,6 +12,7 @@ import TabNavigation, { Tab } from "@/components/TabNavigation";
 import OverviewTab from "@/components/OverviewTab";
 import IssuesTab from "@/components/IssuesTab";
 import FixesTab from "@/components/FixesTab";
+import AIInsightsTab from "@/components/AIInsightsTab";
 import ChatInterface from "@/components/ChatInterface";
 import { AnalyzeResponse } from "@/lib/types";
 import { analyzeURL } from "@/lib/api";
@@ -124,19 +125,26 @@ export default function Home() {
 
             {/* Detailed View */}
             {viewMode === "detailed" && (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <PillarScores data={result} />
                 <PageSnapshot meta={result.meta} />
                 <TabNavigation
                   activeTab={activeTab}
                   onTabChange={setActiveTab}
                   issueCount={issueCount}
+                  hasAiRecommendations={result.ai_enhanced && result.ai_recommendations.length > 0}
                 />
                 <div>
                   {activeTab === "overview" && <OverviewTab data={result} />}
                   {activeTab === "issues" && <IssuesTab checks={result.checks} />}
                   {activeTab === "fixes" && (
                     <FixesTab recommendations={result.recommendations} />
+                  )}
+                  {activeTab === "ai" && (
+                    <AIInsightsTab
+                      recommendations={result.ai_recommendations}
+                      aiEnhanced={result.ai_enhanced}
+                    />
                   )}
                 </div>
               </div>

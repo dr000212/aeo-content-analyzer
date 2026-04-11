@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, AlertTriangle, Wrench } from "lucide-react";
+import { BarChart3, AlertTriangle, Wrench, Sparkles } from "lucide-react";
 
 export type Tab = "overview" | "issues" | "fixes" | "ai";
 
@@ -8,18 +8,21 @@ interface TabNavigationProps {
   activeTab: Tab;
   onTabChange: (tab: Tab) => void;
   issueCount?: number;
+  hasAiRecommendations?: boolean;
 }
 
 const tabs: { id: Tab; label: string; icon: typeof BarChart3 }[] = [
   { id: "overview", label: "Overview", icon: BarChart3 },
   { id: "issues", label: "Issues", icon: AlertTriangle },
   { id: "fixes", label: "How to Fix", icon: Wrench },
+  { id: "ai", label: "AI Insights", icon: Sparkles },
 ];
 
 export default function TabNavigation({
   activeTab,
   onTabChange,
   issueCount,
+  hasAiRecommendations,
 }: TabNavigationProps) {
   return (
     <div className="border-b border-border">
@@ -42,6 +45,11 @@ export default function TabNavigation({
               {tab.id === "issues" && issueCount !== undefined && issueCount > 0 && (
                 <span className="ml-1 px-1.5 py-0.5 bg-red-100 text-red-700 text-xs rounded-full font-medium min-w-[20px] text-center">
                   {issueCount}
+                </span>
+              )}
+              {tab.id === "ai" && hasAiRecommendations && (
+                <span className="ml-1 px-1.5 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">
+                  ✨
                 </span>
               )}
             </button>
