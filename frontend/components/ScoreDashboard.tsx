@@ -107,11 +107,11 @@ export default function ScoreDashboard({ data }: ScoreDashboardProps) {
       weight: PILLAR_WHAT_WE_CHECK.technical_seo.weight,
       failed: data.technical_seo.checks.filter((c) => !c.passed).length,
       total: data.technical_seo.checks.length,
-      gradient: "from-blue-500 to-cyan-400",
-      ring: "ring-blue-300",
-      light: "bg-blue-50",
-      text: "text-blue-700",
-      border: "border-blue-300",
+      gradient: "from-sky-500 to-cyan-400",
+      ring: "ring-sky-300",
+      light: "bg-sky-50",
+      text: "text-sky-700",
+      border: "border-sky-300",
     },
     {
       key: "onpage_seo",
@@ -121,11 +121,11 @@ export default function ScoreDashboard({ data }: ScoreDashboardProps) {
       weight: PILLAR_WHAT_WE_CHECK.onpage_seo.weight,
       failed: data.onpage_seo.checks.filter((c) => !c.passed).length,
       total: data.onpage_seo.checks.length,
-      gradient: "from-purple-500 to-pink-400",
-      ring: "ring-purple-300",
-      light: "bg-purple-50",
-      text: "text-purple-700",
-      border: "border-purple-300",
+      gradient: "from-[#3B82A8] to-[#5BA3C8]",
+      ring: "ring-[#3B82A8]/30",
+      light: "bg-[#3B82A8]/5",
+      text: "text-[#2E7399]",
+      border: "border-[#3B82A8]/40",
     },
     {
       key: "links",
@@ -135,11 +135,11 @@ export default function ScoreDashboard({ data }: ScoreDashboardProps) {
       weight: PILLAR_WHAT_WE_CHECK.links.weight,
       failed: data.link_analysis.checks.filter((c) => !c.passed).length,
       total: data.link_analysis.checks.length,
-      gradient: "from-emerald-500 to-teal-400",
-      ring: "ring-emerald-300",
-      light: "bg-emerald-50",
-      text: "text-emerald-700",
-      border: "border-emerald-300",
+      gradient: "from-teal-500 to-cyan-400",
+      ring: "ring-teal-300",
+      light: "bg-teal-50",
+      text: "text-teal-700",
+      border: "border-teal-300",
     },
     {
       key: "performance",
@@ -149,11 +149,11 @@ export default function ScoreDashboard({ data }: ScoreDashboardProps) {
       weight: PILLAR_WHAT_WE_CHECK.performance.weight,
       failed: data.performance.checks.filter((c) => !c.passed).length,
       total: data.performance.checks.length,
-      gradient: "from-amber-500 to-orange-400",
-      ring: "ring-amber-300",
-      light: "bg-amber-50",
-      text: "text-amber-700",
-      border: "border-amber-300",
+      gradient: "from-[#2E7399] to-[#3B82A8]",
+      ring: "ring-[#2E7399]/30",
+      light: "bg-[#2E7399]/5",
+      text: "text-[#2E7399]",
+      border: "border-[#2E7399]/40",
     },
     {
       key: "geo_readiness",
@@ -163,11 +163,11 @@ export default function ScoreDashboard({ data }: ScoreDashboardProps) {
       weight: PILLAR_WHAT_WE_CHECK.geo_readiness.weight,
       failed: data.geo_readiness.checks.filter((c) => !c.passed).length,
       total: data.geo_readiness.checks.length,
-      gradient: "from-violet-500 to-fuchsia-500",
-      ring: "ring-violet-300",
-      light: "bg-violet-50",
-      text: "text-violet-700",
-      border: "border-violet-300",
+      gradient: "from-[#1B2A3D] to-[#3B82A8]",
+      ring: "ring-[#1B2A3D]/20",
+      light: "bg-[#1B2A3D]/5",
+      text: "text-[#1B2A3D]",
+      border: "border-[#1B2A3D]/30",
     },
   ];
 
@@ -185,8 +185,8 @@ export default function ScoreDashboard({ data }: ScoreDashboardProps) {
 
   return (
     <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 hero-glow relative overflow-hidden">
-      {/* Gradient accent bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-purple-500 to-accent" />
+      {/* Accent bar */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
 
       <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 items-start">
         {/* Left: Big score ring + grade */}
@@ -251,7 +251,7 @@ export default function ScoreDashboard({ data }: ScoreDashboardProps) {
           {/* Chat CTA */}
           <button
             onClick={scrollToChat}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-primary via-purple-600 to-accent text-white font-semibold text-sm hover:shadow-lg hover:shadow-primary/25 active:scale-[0.99] transition-all cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary text-white font-semibold text-sm hover:brightness-110 hover:shadow-lg hover:shadow-primary/25 active:scale-[0.99] transition-all cursor-pointer"
           >
             <MessageCircle className="w-4 h-4" />
             Ask our AI Expert how to fix these issues

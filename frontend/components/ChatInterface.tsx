@@ -80,9 +80,9 @@ export default function ChatInterface({
   }
 
   return (
-    <div id="seo-chat" className="bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 border-2 border-primary/30 rounded-2xl overflow-hidden shadow-xl scroll-mt-20">
+    <div id="seo-chat" className="bg-white border-2 border-border rounded-2xl overflow-hidden shadow-lg scroll-mt-20">
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary via-purple-600 to-accent p-4 text-white">
+      <div className="bg-primary p-4 text-white">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
             <Sparkles className="w-5 h-5" />
@@ -105,7 +105,7 @@ export default function ChatInterface({
       {messages.length === 0 && (
         <div className="p-5 border-b border-border/50">
           <div className="flex gap-3 mb-4">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-accent to-emerald-500 flex items-center justify-center text-white shadow-sm">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white shadow-sm">
               <Bot className="w-4 h-4" />
             </div>
             <div className="bg-white border border-border rounded-2xl rounded-tl-sm px-4 py-3 text-sm text-text-main shadow-sm max-w-[85%]">
@@ -184,7 +184,7 @@ export default function ChatInterface({
           <button
             type="submit"
             disabled={sending || !input.trim()}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary to-purple-600 text-white font-medium text-sm flex items-center gap-1.5 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-primary text-white font-medium text-sm flex items-center gap-1.5 hover:brightness-110 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             <Send className="w-4 h-4" />
             <span className="hidden sm:inline">Send</span>

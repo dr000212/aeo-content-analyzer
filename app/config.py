@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     # Database (SQLite by default — single file in project root)
     database_url: str = "sqlite+aiosqlite:///./aeo.db"
 
-    # Redis
-    redis_url: str = "redis://localhost:6379/0"
+    # Redis (empty string = disabled)
+    redis_url: str = ""
     cache_ttl_seconds: int = 3600  # 1 hour
 
     # Crawler

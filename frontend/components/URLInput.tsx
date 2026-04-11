@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Globe, Loader2, ArrowRight, Sparkles } from "lucide-react";
+import { Globe, Loader2, ArrowRight } from "lucide-react";
 
 interface URLInputProps {
   onAnalyze: (url: string) => void;
@@ -38,7 +38,7 @@ export default function URLInput({ onAnalyze, isLoading }: URLInputProps) {
       <div
         className={`relative rounded-2xl p-[1px] transition-all duration-300 ${
           focused
-            ? "bg-gradient-to-r from-primary via-blue-400 to-primary shadow-lg shadow-primary/15"
+            ? "bg-primary/30 shadow-lg shadow-primary/10"
             : "bg-border"
         }`}
       >
@@ -67,7 +67,7 @@ export default function URLInput({ onAnalyze, isLoading }: URLInputProps) {
               }}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
-              placeholder="Paste your page URL here (e.g., https://yourwebsite.com/page)"
+              placeholder="Enter your website URL to scan foundations..."
               className="flex-1 min-w-0 py-2 sm:py-2.5 bg-transparent text-text-main placeholder:text-text-dim focus:outline-none text-sm"
               disabled={isLoading}
             />
@@ -76,22 +76,21 @@ export default function URLInput({ onAnalyze, isLoading }: URLInputProps) {
           <button
             type="submit"
             disabled={isLoading}
-            className={`flex-shrink-0 w-full sm:w-auto px-5 py-2.5 text-white font-semibold rounded-xl flex items-center justify-center gap-2 text-sm whitespace-nowrap transition-all duration-200 ${
+            className={`flex-shrink-0 w-full sm:w-auto px-6 py-2.5 text-white font-bold rounded-xl flex items-center justify-center gap-2 text-sm whitespace-nowrap transition-all duration-200 ${
               isLoading
                 ? "bg-primary/70 cursor-not-allowed"
-                : "bg-primary hover:bg-blue-600 hover:shadow-md hover:shadow-primary/20 active:scale-[0.98]"
+                : "bg-primary hover:brightness-110 hover:shadow-md hover:shadow-primary/20 active:scale-[0.98]"
             }`}
           >
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Checking your page...
+                Analyzing...
               </>
             ) : (
               <>
-                <Sparkles className="w-4 h-4" />
-                Analyze My Page
-                <ArrowRight className="w-3.5 h-3.5 opacity-60" />
+                Analyze Now
+                <ArrowRight className="w-4 h-4" />
               </>
             )}
           </button>
@@ -102,13 +101,7 @@ export default function URLInput({ onAnalyze, isLoading }: URLInputProps) {
         <p className="mt-2 text-sm text-danger pl-2">{error}</p>
       )}
 
-      {!error && !isLoading && (
-        <p className="mt-2 text-xs text-text-dim pl-2">
-          We&apos;ll check 66 things — then our{" "}
-          <span className="font-semibold text-primary">AI SEO Expert</span> chats
-          with you about how to fix any issue, in plain English ✨
-        </p>
-      )}
+      {/* subtitle moved to EmptyState */}
     </div>
   );
 }

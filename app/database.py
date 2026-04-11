@@ -29,6 +29,7 @@ def _normalize_db_url(raw: str) -> tuple[str, dict]:
         parts = urlsplit(raw)
         query = dict(parse_qsl(parts.query))
         sslmode = query.pop("sslmode", None)
+        ssl_param = query.pop("ssl", None)
         # Strip other libpq-only params asyncpg doesn't accept
         for libpq_only in (
             "channel_binding", "sslcert", "sslkey", "sslrootcert", "sslcrl",
@@ -36,7 +37,7 @@ def _normalize_db_url(raw: str) -> tuple[str, dict]:
             "gssencmode", "krbsrvname", "service",
         ):
             query.pop(libpq_only, None)
-        if sslmode in ("require", "verify-ca", "verify-full", "prefer", "allow"):
+        if sslmode in ("require", "verify-ca", "verify-full", "prefer", "allow") or ssl_param:
             connect_args["ssl"] = True
         raw = urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(query), parts.fragment))
 
@@ -45,7 +46,15 @@ def _normalize_db_url(raw: str) -> tuple[str, dict]:
 
 _db_url, _connect_args = _normalize_db_url(settings.database_url)
 
-engine = create_async_engine(_db_url, echo=False, future=True, connect_args=_connect_args)
+engine = create_async_engine(
+    _db_url,
+    echo=False,
+    future=True,
+    connect_args=_connect_args,
+    # Recycle connections before Render/Postgres kills idle ones (5 min)
+    pool_recycle=270,
+    pool_pre_ping=True,
+)
 
 AsyncSessionLocal = async_sessionmaker(
     bind=engine,

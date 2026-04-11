@@ -6,11 +6,8 @@ export default function Header() {
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-3.5 flex items-center">
         <div className="flex items-center gap-3">
           {/* Logo Mark */}
-          <div className="relative w-10 h-10">
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary via-purple-500 to-accent opacity-20 blur-sm" />
-            <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-purple-500 to-accent flex items-center justify-center shadow-lg shadow-primary/25">
-              <Logo size={22} />
-            </div>
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-md">
+            <Logo size={22} />
           </div>
 
           {/* Brand Name */}

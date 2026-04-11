@@ -148,20 +148,20 @@ function GeoSubRow({
   const info = labelMap[subKey];
 
   return (
-    <div className="bg-white/60 rounded-lg p-3 border border-violet-100">
+    <div className="bg-white/60 rounded-lg p-3 border border-[#3B82A8]/15">
       <div className="flex items-baseline justify-between gap-2 mb-1.5">
         <div>
           <div className="flex items-baseline gap-2">
             <span className="text-xs font-semibold text-text-main">{info.name}</span>
-            <span className="text-[9px] text-violet-600 font-bold">{weight}%</span>
+            <span className="text-[9px] text-[#2E7399] font-bold">{weight}%</span>
           </div>
           <p className="text-[10px] text-text-dim">{info.tagline}</p>
         </div>
-        <div className="text-lg font-extrabold text-violet-700 leading-none">
+        <div className="text-lg font-extrabold text-[#1B2A3D] leading-none">
           {result.score}
         </div>
       </div>
-      <div className="h-1.5 rounded-full bg-violet-100 overflow-hidden">
+      <div className="h-1.5 rounded-full bg-[#3B82A8]/10 overflow-hidden">
         <div
           className={`h-full rounded-full bg-gradient-to-r ${barColor} transition-all duration-700`}
           style={{ width: `${result.score}%` }}

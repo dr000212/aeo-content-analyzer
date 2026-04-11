@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Header from "@/components/Header";
 import Logo from "@/components/Logo";
-import URLInput from "@/components/URLInput";
 import LoadingState from "@/components/LoadingState";
 import EmptyState from "@/components/EmptyState";
 import ScoreDashboard from "@/components/ScoreDashboard";
@@ -22,6 +21,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState<Tab>("overview");
+  const [viewMode, setViewMode] = useState<"chat" | "detailed">("chat");
 
   async function handleAnalyze(url: string) {
     setLoading(true);
@@ -61,27 +61,18 @@ export default function Home() {
     <div className="min-h-screen">
       <Header />
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        {/* URL Input */}
-        <div className="mb-8">
-          <URLInput onAnalyze={handleAnalyze} isLoading={loading} />
-          {error && (
-            <div className="mt-3 p-3 bg-danger/10 border border-danger/20 rounded-lg flex items-center justify-between">
-              <p className="text-sm text-danger">{error}</p>
-              <button
-                onClick={() => setError("")}
-                className="text-danger hover:text-red-300 text-sm ml-4"
-              >
-                Dismiss
-              </button>
-            </div>
-          )}
-        </div>
-
+      <main className="max-w-6xl mx-auto px-4 py-8 overflow-x-hidden">
         {/* States */}
         {loading && <LoadingState />}
 
-        {!loading && !result && !error && <EmptyState />}
+        {!loading && !result && (
+          <EmptyState
+            onAnalyze={handleAnalyze}
+            isLoading={loading}
+            error={error}
+            onDismissError={() => setError("")}
+          />
+        )}
 
         {!loading && result && (
           <div className="space-y-6">
@@ -98,34 +89,58 @@ export default function Home() {
             {/* Interactive Score Dashboard */}
             <ScoreDashboard data={result} />
 
-            {/* Expert SEO Assistant — chat interface (the star) */}
-            <ChatInterface
-              analysisId={result.analysis_id}
-              initialSuggestions={result.suggested_questions}
-              url={result.url}
-            />
-
-            {/* Pillar Scores — flat detailed breakdown */}
-            <PillarScores data={result} />
-
-            {/* Page Snapshot */}
-            <PageSnapshot meta={result.meta} />
-
-            {/* Tabs */}
-            <TabNavigation
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-              issueCount={issueCount}
-            />
-
-            {/* Tab Content */}
-            <div>
-              {activeTab === "overview" && <OverviewTab data={result} />}
-              {activeTab === "issues" && <IssuesTab checks={result.checks} />}
-              {activeTab === "fixes" && (
-                <FixesTab recommendations={result.recommendations} />
-              )}
+            {/* Chat / Detailed Toggle */}
+            <div className="flex items-center justify-center gap-1 p-1 bg-white border border-border rounded-xl shadow-sm">
+              <button
+                onClick={() => setViewMode("chat")}
+                className={`flex-1 flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all duration-200 cursor-pointer ${
+                  viewMode === "chat"
+                    ? "bg-primary text-white shadow-md"
+                    : "text-text-muted hover:text-text-main hover:bg-slate-50"
+                }`}
+              >
+                💬 Chat with AI Expert
+              </button>
+              <button
+                onClick={() => setViewMode("detailed")}
+                className={`flex-1 flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all duration-200 cursor-pointer ${
+                  viewMode === "detailed"
+                    ? "bg-primary text-white shadow-md"
+                    : "text-text-muted hover:text-text-main hover:bg-slate-50"
+                }`}
+              >
+                📊 Detailed Breakdown
+              </button>
             </div>
+
+            {/* Chat View */}
+            {viewMode === "chat" && (
+              <ChatInterface
+                analysisId={result.analysis_id}
+                initialSuggestions={result.suggested_questions}
+                url={result.url}
+              />
+            )}
+
+            {/* Detailed View */}
+            {viewMode === "detailed" && (
+              <div className="space-y-6">
+                <PillarScores data={result} />
+                <PageSnapshot meta={result.meta} />
+                <TabNavigation
+                  activeTab={activeTab}
+                  onTabChange={setActiveTab}
+                  issueCount={issueCount}
+                />
+                <div>
+                  {activeTab === "overview" && <OverviewTab data={result} />}
+                  {activeTab === "issues" && <IssuesTab checks={result.checks} />}
+                  {activeTab === "fixes" && (
+                    <FixesTab recommendations={result.recommendations} />
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </main>
@@ -134,7 +149,7 @@ export default function Home() {
       <footer className="max-w-6xl mx-auto px-4 py-6 mt-8 border-t border-border">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-text-dim">
           <span className="flex items-center gap-1.5">
-            <span className="w-4 h-4 rounded bg-gradient-to-br from-primary via-purple-500 to-accent flex items-center justify-center inline-flex">
+            <span className="w-4 h-4 rounded bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center inline-flex">
               <Logo size={10} />
             </span>
             SearchEO &mdash; Find out how search engines and AI see your page
