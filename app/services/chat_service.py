@@ -38,7 +38,17 @@ STRICT RULES:
 6. Reference SPECIFIC findings from this user's report — don't give generic SEO advice.
 7. Be encouraging. Celebrate things they got right before highlighting fixes.
 8. Keep responses focused. 2-4 short paragraphs max unless they ask for full code.
-9. When users ask "what content should I add" or similar, give SPECIFIC suggestions based on their page's topic, missing schema types, and failed checks. Suggest exact headings, FAQ sections, schema markup code, and meta description text tailored to their page.
+
+CRITICAL — CONTENT GENERATION RULES:
+When users ask for titles, descriptions, headings, content suggestions, or any text to add to their page:
+- NEVER give generic filler text like "Discover the Essence of Our Offerings" or "Your Gateway to Quality Services". These are useless.
+- ALWAYS analyze the page's actual URL, title, word count, and schema types to understand what the page is about.
+- If the page topic is unclear from the data, ASK the user: "What is the main topic or service of this page? I want to give you something you can actually use."
+- Titles MUST: include the likely primary keyword, be under 60 characters, and describe what the page actually offers.
+- Meta descriptions MUST: include a clear value proposition, a call-to-action, be 150-160 characters, and mention the specific service/product.
+- Give 3 options ranked from best to good, and explain WHY each one works for SEO.
+- If suggesting headings or FAQ sections, base them on what search users would actually look for related to the page's topic.
+- Always explain the SEO reasoning: "This title works because it puts your keyword first and tells Google exactly what this page is about."
 
 REPORT CONTEXT FOR {url}:
 
@@ -63,6 +73,8 @@ PASSED CHECKS ({passed_count} total):
 
 PAGE METADATA:
 - Title: {title}
+- Meta description: {meta_desc}
+- H1: {h1}
 - Word count: {word_count}
 - Has meta description: {has_meta}
 - HTTPS: {is_https}
@@ -70,6 +82,11 @@ PAGE METADATA:
 - Load time: {load_time_ms}ms
 - HTML size: {html_size_kb}KB
 - Schema types found: {schema_types}
+
+TOP RECOMMENDATIONS:
+{recommendations}
+
+IMPORTANT: When the user asks for titles, descriptions, or content — use the page title, H1, URL, and meta description above to understand the page's topic. Generate content that is SPECIFIC to this page's actual subject matter. Never produce generic marketing fluff.
 """
 
 
@@ -86,6 +103,10 @@ def build_system_prompt(report: dict[str, Any]) -> str:
 
     meta = report.get("meta", {}) or {}
     geo = report.get("geo_readiness", {}) or {}
+
+    # Build recommendations string
+    recs = report.get("recommendations", []) or []
+    recs_str = "\n".join(f"- {r.get('text', '')}" for r in recs[:10]) or "(none)"
 
     return SYSTEM_PROMPT.format(
         url=report.get("url", "the analyzed page"),
@@ -105,6 +126,8 @@ def build_system_prompt(report: dict[str, Any]) -> str:
         failed_checks=failed_str,
         passed_checks=passed_str,
         title=meta.get("title") or "(none)",
+        meta_desc=meta.get("meta_description") or "(none)",
+        h1=meta.get("h1") or "(none)",
         word_count=meta.get("word_count", 0),
         has_meta=meta.get("has_meta_description", False),
         is_https=meta.get("is_https", False),
@@ -112,6 +135,7 @@ def build_system_prompt(report: dict[str, Any]) -> str:
         load_time_ms=meta.get("load_time_ms", 0),
         html_size_kb=meta.get("html_size_kb", 0),
         schema_types=", ".join(meta.get("schema_types") or []) or "(none)",
+        recommendations=recs_str,
     )
 
 
