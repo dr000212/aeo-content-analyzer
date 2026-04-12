@@ -12,14 +12,19 @@ export default function URLInput({ onAnalyze, isLoading }: URLInputProps) {
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
   const [focused, setFocused] = useState(false);
+  const [shaking, setShaking] = useState(false);
 
   function validate(value: string): boolean {
     if (!value.trim()) {
       setError("That doesn't look like a web address. Make sure it starts with https://");
+      setShaking(true);
+      setTimeout(() => setShaking(false), 500);
       return false;
     }
     if (!/^https?:\/\/.+/i.test(value.trim())) {
       setError("That doesn't look like a web address. Make sure it starts with https://");
+      setShaking(true);
+      setTimeout(() => setShaking(false), 500);
       return false;
     }
     setError("");
@@ -40,7 +45,7 @@ export default function URLInput({ onAnalyze, isLoading }: URLInputProps) {
           focused
             ? "bg-primary/30 shadow-lg shadow-primary/10"
             : "bg-border"
-        }`}
+        } ${shaking ? "animate-shake" : ""}`}
       >
         <form
           onSubmit={handleSubmit}
@@ -79,7 +84,7 @@ export default function URLInput({ onAnalyze, isLoading }: URLInputProps) {
             className={`flex-shrink-0 w-full sm:w-auto px-6 py-2.5 text-white font-bold rounded-xl flex items-center justify-center gap-2 text-sm whitespace-nowrap transition-all duration-200 ${
               isLoading
                 ? "bg-primary/70 cursor-not-allowed"
-                : "bg-primary hover:brightness-110 hover:shadow-md hover:shadow-primary/20 active:scale-[0.98]"
+                : "bg-primary hover:brightness-110 hover:shadow-md hover:shadow-primary/20 hover:-translate-y-0.5 active:scale-[0.98] btn-shimmer"
             }`}
           >
             {isLoading ? (

@@ -568,7 +568,7 @@ function DescriptionSlideshow({ activeIndex }: { activeIndex: number }) {
         <div className="p-3 sm:p-4">
           <div className="flex items-center justify-between mb-2.5 px-1">
             <p className="text-[10px] font-bold text-text-dim uppercase tracking-wider">
-              Checks #{checkOffset + 1}\u2013{checkOffset + cat.checkSimple.length} of 66
+              Checks #{checkOffset + 1}&ndash;{checkOffset + cat.checkSimple.length} of 66
             </p>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
@@ -592,7 +592,7 @@ function DescriptionSlideshow({ activeIndex }: { activeIndex: number }) {
                   <span className="text-sm group-hover:scale-110 transition-transform duration-200">{cat.checkEmojis[i]}</span>
                 </div>
                 <span className="text-[11px] font-medium text-text-main group-hover:text-primary transition-colors leading-snug flex-1">{check}</span>
-                <span className="text-emerald-400 opacity-40 group-hover:opacity-100 group-hover:text-emerald-500 group-hover:scale-115 transition-all flex-shrink-0 text-[10px]">\u2713</span>
+                <span className="text-emerald-400 opacity-40 group-hover:opacity-100 group-hover:text-emerald-500 group-hover:scale-115 transition-all flex-shrink-0 text-[10px]">{"\u2713"}</span>
               </motion.div>
             ))}
           </div>
