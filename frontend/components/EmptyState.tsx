@@ -340,18 +340,92 @@ function InteractiveChatMockup({ onScrollToInput }: { onScrollToInput: () => voi
   const [typing, setTyping] = useState(false);
   const [input, setInput] = useState("");
   const [confidenceWidth, setConfidenceWidth] = useState<number | null>(null);
+  const [userInteracted, setUserInteracted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const chatRef = useRef<HTMLDivElement>(null);
+  const autoPlayedRef = useRef(false);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, typing]);
 
+  // Auto-play demo: use IntersectionObserver with delayed setup
+  useEffect(() => {
+    if (autoPlayedRef.current || userInteracted) return;
+    const el = chatRef.current;
+    if (!el) return;
+
+    let observer: IntersectionObserver | null = null;
+    const setupTimeout = setTimeout(() => {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && !autoPlayedRef.current) {
+            autoPlayedRef.current = true;
+            observer?.disconnect();
+            runAutoDemo();
+          }
+        },
+        { threshold: 0.15 }
+      );
+      observer.observe(el);
+    }, 800);
+
+    return () => {
+      clearTimeout(setupTimeout);
+      observer?.disconnect();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userInteracted]);
+
+  function runAutoDemo() {
+    if (userInteracted) return;
+
+    const AUTO_DEMO = [
+      { delay: 1200, action: "user", text: "What should I fix first?" },
+      { delay: 2800, action: "typing" },
+      { delay: 4500, action: "bot", data: DEMO_CONVERSATIONS[2] },
+      { delay: 8000, action: "user", text: "How is my site speed looking?" },
+      { delay: 9500, action: "typing" },
+      { delay: 11200, action: "bot", data: DEMO_CONVERSATIONS[0] },
+    ];
+
+    const timeouts: NodeJS.Timeout[] = [];
+
+    AUTO_DEMO.forEach((step) => {
+      const t = setTimeout(() => {
+        if (step.action === "user") {
+          setTyping(false);
+          setMessages((prev) => [...prev, { role: "user", text: step.text! }]);
+        } else if (step.action === "typing") {
+          setTyping(true);
+        } else if (step.action === "bot" && step.data) {
+          setTyping(false);
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "bot",
+              text: step.data!.response.text,
+              alert: step.data!.response.alert,
+              confidence: step.data!.response.confidence,
+            },
+          ]);
+          setConfidenceWidth(step.data!.response.confidence);
+          setRound((r) => r + 1);
+        }
+      }, step.delay);
+      timeouts.push(t);
+    });
+
+    // cleanup not needed — one-shot demo
+  }
+
   const handleQuestion = useCallback(
     (text: string) => {
       if (typing) return;
+      setUserInteracted(true);
 
       // Final round -> scroll to input
-      if (round >= 2 || text.includes("\u2191")) {
+      if (round >= 3 || text.includes("\u2191")) {
         onScrollToInput();
         return;
       }
@@ -403,7 +477,7 @@ function InteractiveChatMockup({ onScrollToInput }: { onScrollToInput: () => voi
   const suggestions = ROUND_SUGGESTIONS[Math.min(round, ROUND_SUGGESTIONS.length - 1)];
 
   return (
-    <div className="bg-white border-2 border-border rounded-2xl shadow-xl overflow-hidden">
+    <div ref={chatRef} className="bg-white border-2 border-border rounded-2xl shadow-xl overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-2.5 px-4 py-3 border-b border-border bg-[#FAFBFC]">
         <span className="w-2.5 h-2.5 rounded-full bg-green-400 live-dot" />
@@ -746,6 +820,76 @@ export default function EmptyState({ onAnalyze, isLoading, error, onDismissError
                 </motion.div>
               ))}
             </div>
+
+            {/* What makes us different — visual cards */}
+            <div className="mt-8 space-y-3">
+              <p className="text-xs font-bold text-text-dim uppercase tracking-wider flex items-center gap-2">
+                <span className="w-4 h-[2px] bg-primary rounded-full" />
+                What makes SearchEO different
+              </p>
+              {[
+                {
+                  icon: "\u{1F9E0}",
+                  title: "AI that actually understands SEO",
+                  desc: "Not a checklist \u2014 a real conversation about your specific page.",
+                  color: "from-purple-500/10 to-indigo-500/10",
+                  border: "border-purple-200/60",
+                },
+                {
+                  icon: "\u{1F527}",
+                  title: "Copy-paste fixes, not vague advice",
+                  desc: "Get the exact meta tag, schema markup, or code snippet you need.",
+                  color: "from-blue-500/10 to-cyan-500/10",
+                  border: "border-blue-200/60",
+                },
+                {
+                  icon: "\u{1F916}",
+                  title: "Built for the AI search era",
+                  desc: "We test what ChatGPT, Perplexity & Google AI Overview look for.",
+                  color: "from-emerald-500/10 to-teal-500/10",
+                  border: "border-emerald-200/60",
+                },
+              ].map((card, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.12, duration: 0.4 }}
+                  whileHover={{ x: 4, boxShadow: "0 4px 15px rgba(0,0,0,0.06)" }}
+                  className={`flex items-start gap-3 p-3 rounded-xl bg-gradient-to-r ${card.color} border ${card.border} cursor-default transition-all`}
+                >
+                  <div className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center flex-shrink-0">
+                    <span className="text-lg">{card.icon}</span>
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-navy leading-tight">{card.title}</p>
+                    <p className="text-[11px] text-text-muted leading-relaxed mt-0.5">{card.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Capability strip */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mt-5 flex items-center gap-1.5 flex-wrap"
+            >
+              <div className="flex items-center gap-1.5 bg-navy/5 rounded-full px-3 py-1.5">
+                <span className="text-[11px]">{"\u{1F50D}"}</span>
+                <span className="text-[10px] font-semibold text-navy">66 deep checks</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-navy/5 rounded-full px-3 py-1.5">
+                <span className="text-[11px]">{"\u26A1"}</span>
+                <span className="text-[10px] font-semibold text-navy">Results in seconds</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-navy/5 rounded-full px-3 py-1.5">
+                <span className="text-[11px]">{"\u{1F512}"}</span>
+                <span className="text-[10px] font-semibold text-navy">No login required</span>
+              </div>
+            </motion.div>
           </div>
 
           {/* Interactive chat mockup */}
