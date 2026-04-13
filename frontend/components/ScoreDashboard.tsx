@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import ScoreRing from "./ScoreRing";
 import ScoringExplainer from "./ScoringExplainer";
 import { AnalyzeResponse } from "@/lib/types";
@@ -45,28 +46,28 @@ function PillarTile({
   return (
     <button
       onClick={onClick}
-      className={`group relative text-left rounded-xl p-3 border-2 transition-all duration-200 cursor-pointer overflow-hidden ${
+      className={`group relative text-left rounded-xl p-4 border-2 transition-all duration-200 cursor-pointer overflow-hidden ${
         isActive
           ? `${tile.border} ${tile.light} shadow-md scale-[1.02]`
-          : "border-border bg-white hover:border-slate-300 hover:shadow-sm"
+          : "border-border bg-white hover:border-slate-300 hover:shadow-sm hover:-translate-y-0.5"
       }`}
     >
       {/* Gradient accent strip */}
-      <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${tile.gradient}`} />
+      <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${tile.gradient}`} />
 
-      <div className="flex items-start gap-2">
-        <span className="text-xl leading-none">{tile.icon}</span>
+      <div className="flex items-start gap-3">
+        <span className="text-2xl leading-none">{tile.icon}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-semibold text-text-main leading-tight truncate">
+          <p className="text-sm font-semibold text-text-main leading-tight truncate">
             {tile.name}
           </p>
-          <p className="text-[9px] text-text-dim mt-0.5">{tile.weight}% weight</p>
+          <p className="text-xs text-text-dim mt-0.5">{tile.weight}% weight</p>
         </div>
-        <span className={`text-base font-extrabold ${tile.text}`}>{tile.score}</span>
+        <span className={`text-xl font-extrabold ${tile.text}`}>{tile.score}</span>
       </div>
 
       {/* Mini progress bar */}
-      <div className="mt-2 h-1.5 rounded-full bg-slate-200 overflow-hidden">
+      <div className="mt-3 h-2 rounded-full bg-slate-200 overflow-hidden">
         <div
           className={`h-full rounded-full bg-gradient-to-r ${tile.gradient} transition-all duration-700`}
           style={{ width: `${tile.score}%` }}
@@ -75,11 +76,11 @@ function PillarTile({
 
       {/* Failed badge */}
       {tile.failed > 0 ? (
-        <p className="text-[10px] text-amber-700 mt-1.5 font-medium">
+        <p className="text-xs text-amber-700 mt-2 font-medium">
           {tile.failed}/{tile.total} need fixing
         </p>
       ) : (
-        <p className="text-[10px] text-emerald-600 mt-1.5 font-medium">
+        <p className="text-xs text-emerald-600 mt-2 font-medium">
           ✓ All {tile.total} passed
         </p>
       )}
@@ -184,7 +185,12 @@ export default function ScoreDashboard({ data }: ScoreDashboardProps) {
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 hero-glow relative overflow-hidden">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="bg-card border border-border rounded-2xl p-5 sm:p-6 hero-glow relative overflow-hidden"
+    >
       {/* Accent bar */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
 
@@ -237,14 +243,20 @@ export default function ScoreDashboard({ data }: ScoreDashboardProps) {
           </div>
 
           {/* Pillar tiles grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-            {tiles.map((tile) => (
-              <PillarTile
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {tiles.map((tile, i) => (
+              <motion.div
                 key={tile.key}
-                tile={tile}
-                isActive={activeTile === tile.key}
-                onClick={() => handleTileClick(tile.key)}
-              />
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + i * 0.08, duration: 0.4 }}
+              >
+                <PillarTile
+                  tile={tile}
+                  isActive={activeTile === tile.key}
+                  onClick={() => handleTileClick(tile.key)}
+                />
+              </motion.div>
             ))}
           </div>
 
@@ -264,6 +276,6 @@ export default function ScoreDashboard({ data }: ScoreDashboardProps) {
       <div className="mt-4 pt-4 border-t border-border">
         <ScoringExplainer />
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect, useState } from "react";
 import { BarChart3, AlertTriangle, Wrench, Sparkles } from "lucide-react";
 
 export type Tab = "overview" | "issues" | "fixes" | "ai";
@@ -24,31 +25,47 @@ export default function TabNavigation({
   issueCount,
   hasAiRecommendations,
 }: TabNavigationProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [underline, setUnderline] = useState({ left: 0, width: 0 });
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const activeBtn = container.querySelector(`[data-tab="${activeTab}"]`) as HTMLElement;
+    if (activeBtn) {
+      setUnderline({
+        left: activeBtn.offsetLeft,
+        width: activeBtn.offsetWidth,
+      });
+    }
+  }, [activeTab]);
+
   return (
-    <div className="border-b border-border">
-      <div className="flex gap-1 overflow-x-auto">
+    <div className="relative border-b border-border">
+      <div ref={containerRef} className="flex gap-1 overflow-x-auto">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           const Icon = tab.icon;
           return (
             <button
               key={tab.id}
+              data-tab={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+              className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold transition-all duration-200 whitespace-nowrap rounded-t-lg cursor-pointer ${
                 isActive
-                  ? "border-primary text-primary"
-                  : "border-transparent text-text-dim hover:text-text-muted"
+                  ? "text-primary"
+                  : "text-text-dim hover:text-text-main hover:bg-slate-50"
               }`}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className={`w-4 h-4 transition-colors ${isActive ? "text-primary" : ""}`} />
               <span>{tab.label}</span>
               {tab.id === "issues" && issueCount !== undefined && issueCount > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 bg-red-100 text-red-700 text-xs rounded-full font-medium min-w-[20px] text-center">
+                <span className="ml-0.5 px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full font-bold min-w-[22px] text-center border border-red-200">
                   {issueCount}
                 </span>
               )}
               {tab.id === "ai" && hasAiRecommendations && (
-                <span className="ml-1 px-1.5 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">
+                <span className="ml-0.5 px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full font-bold border border-purple-200">
                   ✨
                 </span>
               )}
@@ -56,6 +73,11 @@ export default function TabNavigation({
           );
         })}
       </div>
+      {/* Animated underline */}
+      <div
+        className="absolute bottom-0 h-[3px] bg-primary rounded-full transition-all duration-300 ease-out"
+        style={{ left: underline.left, width: underline.width }}
+      />
     </div>
   );
 }

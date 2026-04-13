@@ -614,7 +614,7 @@ function DescriptionSlideshow({ activeIndex }: { activeIndex: number }) {
     >
       <div className="grid sm:grid-cols-[260px_1fr]">
         {/* Left panel */}
-        <div className="bg-gradient-to-b from-navy to-[#243748] p-5 sm:p-6 flex flex-col justify-between text-white relative overflow-hidden">
+        <div className="bg-gradient-to-b from-navy to-[#243748] p-5 sm:p-6 flex flex-col justify-center text-white relative overflow-hidden">
           <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-[#3B82A8]/15 blur-2xl" />
           <div className="relative">
             <div className="flex items-center gap-3 mb-4">
@@ -623,9 +623,9 @@ function DescriptionSlideshow({ activeIndex }: { activeIndex: number }) {
             </div>
             <h3 className="font-extrabold text-xl leading-tight">{cat.name}</h3>
             <p className="text-white/60 text-xs mt-1.5 leading-relaxed">{cat.desc}</p>
+            <p className="text-[13px] text-white/50 leading-relaxed mt-2">{cat.funDesc}</p>
           </div>
           <div className="mt-2 relative">
-            <p className="text-[13px] text-white/50 leading-relaxed">{cat.funDesc}</p>
             <div className="mt-4 bg-white/5 rounded-xl p-3">
               <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider mb-2">
                 <span className="text-white/40">Score Impact</span>
@@ -665,7 +665,7 @@ function DescriptionSlideshow({ activeIndex }: { activeIndex: number }) {
                 <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary/12 to-primary/5 group-hover:from-primary/25 group-hover:to-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-200">
                   <span className="text-sm group-hover:scale-110 transition-transform duration-200">{cat.checkEmojis[i]}</span>
                 </div>
-                <span className="text-[11px] font-medium text-text-main group-hover:text-primary transition-colors leading-snug flex-1">{check}</span>
+                <span className="text-sm font-medium text-text-main group-hover:text-primary transition-colors leading-snug flex-1">{check}</span>
                 <span className="text-emerald-400 opacity-40 group-hover:opacity-100 group-hover:text-emerald-500 group-hover:scale-115 transition-all flex-shrink-0 text-[10px]">{"\u2713"}</span>
               </motion.div>
             ))}

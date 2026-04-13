@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
 import Logo from "@/components/Logo";
 import LoadingState from "@/components/LoadingState";
@@ -76,22 +77,37 @@ export default function Home() {
         )}
 
         {!loading && result && (
-          <div className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-6"
+          >
             {/* Analyzed URL */}
-            <div className="flex items-center gap-2 text-sm text-text-dim">
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.3 }}
+              className="flex items-center gap-2 text-sm text-text-dim"
+            >
               <span className="truncate">Results for: {result.url}</span>
               {result.meta.title && (
                 <span className="hidden md:inline text-text-muted truncate">
                   &mdash; {result.meta.title}
                 </span>
               )}
-            </div>
+            </motion.div>
 
             {/* Interactive Score Dashboard */}
             <ScoreDashboard data={result} />
 
             {/* Chat / Detailed Toggle */}
-            <div className="flex items-center justify-center gap-1 p-1 bg-white border border-border rounded-xl shadow-sm">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.3 }}
+              className="flex items-center justify-center gap-1 p-1 bg-white border border-border rounded-xl shadow-sm"
+            >
               <button
                 onClick={() => setViewMode("chat")}
                 className={`flex-1 flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all duration-200 cursor-pointer ${
@@ -112,19 +128,22 @@ export default function Home() {
               >
                 📊 Detailed Breakdown
               </button>
-            </div>
+            </motion.div>
 
-            {/* Chat View */}
+            {/* Chat / Detailed View */}
+            <AnimatePresence mode="wait">
             {viewMode === "chat" && (
+              <motion.div key="chat" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
               <ChatInterface
                 analysisId={result.analysis_id}
                 initialSuggestions={result.suggested_questions}
                 url={result.url}
               />
+              </motion.div>
             )}
 
-            {/* Detailed View */}
             {viewMode === "detailed" && (
+              <motion.div key="detailed" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
               <div className="space-y-4">
                 <PillarScores data={result} />
                 <PageSnapshot meta={result.meta} />
@@ -134,22 +153,32 @@ export default function Home() {
                   issueCount={issueCount}
                   hasAiRecommendations={result.ai_enhanced && result.ai_recommendations.length > 0}
                 />
-                <div>
-                  {activeTab === "overview" && <OverviewTab data={result} />}
-                  {activeTab === "issues" && <IssuesTab checks={result.checks} />}
-                  {activeTab === "fixes" && (
-                    <FixesTab recommendations={result.recommendations} />
-                  )}
-                  {activeTab === "ai" && (
-                    <AIInsightsTab
-                      recommendations={result.ai_recommendations}
-                      aiEnhanced={result.ai_enhanced}
-                    />
-                  )}
-                </div>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {activeTab === "overview" && <OverviewTab data={result} />}
+                    {activeTab === "issues" && <IssuesTab checks={result.checks} />}
+                    {activeTab === "fixes" && (
+                      <FixesTab recommendations={result.recommendations} />
+                    )}
+                    {activeTab === "ai" && (
+                      <AIInsightsTab
+                        recommendations={result.ai_recommendations}
+                        aiEnhanced={result.ai_enhanced}
+                      />
+                    )}
+                  </motion.div>
+                </AnimatePresence>
               </div>
+              </motion.div>
             )}
-          </div>
+            </AnimatePresence>
+          </motion.div>
         )}
       </main>
 

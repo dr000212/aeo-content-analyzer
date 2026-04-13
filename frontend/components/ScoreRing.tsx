@@ -50,7 +50,12 @@ export default function ScoreRing({
   return (
     <div className="flex flex-col items-center gap-1">
       <div className="relative" style={{ width: size, height: size }}>
-        <svg width={size} height={size} className="-rotate-90">
+        {/* Glow effect */}
+        <div
+          className="absolute inset-0 rounded-full blur-xl opacity-30 animate-pulse"
+          style={{ backgroundColor: color }}
+        />
+        <svg width={size} height={size} className="-rotate-90 relative z-10">
           {/* Background circle */}
           <circle
             cx={size / 2}
@@ -74,7 +79,7 @@ export default function ScoreRing({
             style={{ transition: "stroke-dashoffset 0.1s ease-out" }}
           />
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
           <span
             className="font-bold"
             style={{ fontSize: size * 0.28, color }}

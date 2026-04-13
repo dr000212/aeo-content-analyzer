@@ -137,7 +137,7 @@ export default function ChatInterface({
 
       {/* Messages */}
       {messages.length > 0 && (
-        <div ref={scrollRef} className="max-h-[520px] overflow-y-auto p-6 space-y-5">
+        <div ref={scrollRef} className="max-h-[600px] overflow-y-auto p-6 space-y-5">
           {messages.map((msg, i) => (
             <ChatMessage key={i} role={msg.role} content={msg.content} />
           ))}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Copy, Check as CheckIcon } from "lucide-react";
 import { Recommendation } from "@/lib/types";
 import { PRIORITY_LABELS, EFFORT_LABELS } from "@/lib/labels";
@@ -41,32 +42,43 @@ function FixCard({ rec }: { rec: Recommendation }) {
   const effort = EFFORT_LABELS[rec.effort] || rec.effort;
 
   return (
-    <div className="bg-card border border-border rounded-xl p-5">
+    <div className={`bg-card border rounded-xl p-5 border-l-4 transition-all hover:shadow-md ${
+      rec.priority === "Critical" ? "border-l-red-500 border-red-200" :
+      rec.priority === "High" ? "border-l-amber-400 border-amber-200" :
+      rec.priority === "Low" ? "border-l-blue-400 border-blue-200" :
+      "border-l-slate-300 border-border"
+    }`}>
       {/* Header */}
       <div className="flex flex-wrap items-center gap-2 mb-3">
         <span
-          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${style.bg} ${style.text} ${style.border}`}
+          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${style.bg} ${style.text} ${style.border}`}
         >
           {style.label}
         </span>
-        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
+        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
           {getCategoryLabel(rec.category)}
         </span>
-        <span className="text-xs text-text-dim">⏱ {effort}</span>
+        <span className="text-xs text-text-dim font-medium">⏱ {effort}</span>
       </div>
 
       {/* Title */}
-      <h3 className="font-semibold text-text-main mb-2">{rec.title}</h3>
+      <h3 className="font-bold text-text-main mb-2 text-base">{rec.title}</h3>
 
       {/* Description */}
       <p className="text-sm text-text-muted leading-relaxed">{rec.description}</p>
 
-      {/* Impact estimate */}
-      <div className="mt-3 pt-3 border-t border-border">
-        <p className="text-xs text-text-dim">
-          Impact: Fixing this could improve your score by approximately{" "}
-          <span className="font-medium text-text-muted">{rec.impact_score} points</span>
-        </p>
+      {/* Impact estimate with visual bar */}
+      <div className="mt-4 pt-3 border-t border-border">
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-xs font-semibold text-text-dim">Score impact</span>
+          <span className="text-xs font-bold text-primary">+{rec.impact_score} pts</span>
+        </div>
+        <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-primary to-indigo-400 transition-all duration-500"
+            style={{ width: `${Math.min(rec.impact_score * 5, 100)}%` }}
+          />
+        </div>
       </div>
     </div>
   );
@@ -116,7 +128,14 @@ export default function FixesTab({ recommendations }: FixesTabProps) {
       {filtered.length > 0 ? (
         <div className="space-y-3">
           {filtered.map((rec, i) => (
-            <FixCard key={`${rec.title}-${i}`} rec={rec} />
+            <motion.div
+              key={`${rec.title}-${i}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04, duration: 0.3 }}
+            >
+              <FixCard rec={rec} />
+            </motion.div>
           ))}
         </div>
       ) : (

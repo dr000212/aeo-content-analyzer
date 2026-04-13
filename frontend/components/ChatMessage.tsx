@@ -55,21 +55,21 @@ export default function ChatMessage({ role, content }: ChatMessageProps) {
     <div className={`flex gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}>
       {/* Avatar */}
       <div
-        className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-sm ${
+        className={`flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center shadow-md ${
           isUser
-            ? "bg-primary text-white"
-            : "bg-primary/80 text-white"
+            ? "bg-gradient-to-br from-slate-700 to-slate-900 text-white"
+            : "bg-gradient-to-br from-primary to-purple-600 text-white"
         }`}
       >
-        {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+        {isUser ? <User className="w-4 h-4" /> : <Bot className="w-5 h-5" />}
       </div>
 
       {/* Bubble */}
       <div
-        className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+        className={`max-w-[80%] rounded-2xl px-5 py-3.5 text-sm leading-relaxed ${
           isUser
-            ? "bg-primary text-white rounded-tr-sm"
-            : "bg-white border border-border text-text-main rounded-tl-sm shadow-sm"
+            ? "bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-tr-sm shadow-md"
+            : "bg-white border border-border/60 text-text-main rounded-tl-sm shadow-sm"
         }`}
       >
         {isUser ? (
