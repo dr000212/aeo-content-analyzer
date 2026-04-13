@@ -14,7 +14,7 @@ _redis_client = None
 async def _get_redis():
     global _redis_client
     if _redis_client is None:
-        if not settings.redis_url:
+        if not settings.redis_url or not settings.redis_url.startswith(("redis://", "rediss://", "unix://")):
             return None
         try:
             import redis.asyncio as aioredis

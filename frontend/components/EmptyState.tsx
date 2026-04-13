@@ -624,7 +624,7 @@ function DescriptionSlideshow({ activeIndex }: { activeIndex: number }) {
             <h3 className="font-extrabold text-xl leading-tight">{cat.name}</h3>
             <p className="text-white/60 text-xs mt-1.5 leading-relaxed">{cat.desc}</p>
           </div>
-          <div className="mt-5 relative">
+          <div className="mt-2 relative">
             <p className="text-[13px] text-white/50 leading-relaxed">{cat.funDesc}</p>
             <div className="mt-4 bg-white/5 rounded-xl p-3">
               <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider mb-2">
@@ -731,7 +731,7 @@ export default function EmptyState({ onAnalyze, isLoading, error, onDismissError
   };
 
   return (
-    <div className="space-y-16 py-4">
+    <div className="space-y-16 -mt-10">
       <ScrollProgress />
 
       {/* ═══════ 1. HERO ═══════ */}
