@@ -1,17 +1,20 @@
 import Logo from "./Logo";
 
-export default function Header() {
+export default function Header({ onLogoClick }: { onLogoClick?: () => void }) {
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-border/50">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-3.5 flex items-center">
-        <div className="flex items-center gap-3">
+        <button
+          onClick={onLogoClick}
+          className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+        >
           {/* Logo Mark */}
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-md">
             <Logo size={22} />
           </div>
 
           {/* Brand Name */}
-          <div className="flex flex-col">
+          <div className="flex flex-col text-left">
             <div className="flex items-baseline">
               <span className="text-xl font-extrabold tracking-tight text-text-main">
                 Search
@@ -24,7 +27,7 @@ export default function Header() {
               Find out how search engines and AI see your page
             </p>
           </div>
-        </div>
+        </button>
       </div>
     </header>
   );

@@ -60,7 +60,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      <Header />
+      <Header onLogoClick={() => { setResult(null); setError(""); setLoading(false); setActiveTab("overview"); }} />
 
       <main className="max-w-6xl mx-auto px-4 py-8 overflow-x-hidden">
         {/* States */}
